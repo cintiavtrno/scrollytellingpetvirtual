@@ -1,0 +1,278 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans,'Sora',sans-serif)}
+.story{width:100%;max-width:700px;margin:0 auto}
+.chapter{position:relative;display:flex;gap:0;min-height:500px}
+.sticky-visual{position:sticky;top:0;width:220px;flex-shrink:0;height:100vh;display:flex;align-items:center;justify-content:center}
+.scroll-steps{flex:1;padding:0 0 0 20px}
+.step{min-height:70vh;display:flex;align-items:center;padding:20px 0}
+.step-content{opacity:0;transform:translateY(16px);transition:opacity .5s,transform .5s;pointer-events:none;width:100%}
+.step-content.visible{opacity:1;transform:none;pointer-events:auto}
+.speech-bubble{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:16px 18px;position:relative;margin-bottom:12px}
+.speech-bubble::before{content:'';position:absolute;left:-10px;top:20px;border:5px solid transparent;border-right-color:var(--color-border-tertiary)}
+.speech-bubble::after{content:'';position:absolute;left:-8.5px;top:20px;border:5px solid transparent;border-right-color:var(--color-background-primary)}
+.speaker{font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--color-text-secondary);margin-bottom:6px}
+.speech-text{font-size:15px;line-height:1.55;color:var(--color-text-primary)}
+.explainer-box{background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:16px 18px;border-left:3px solid #888}
+.explainer-label{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.12em;color:var(--color-text-secondary);margin-bottom:8px}
+.explainer-text{font-size:14px;line-height:1.6;color:var(--color-text-primary)}
+.stat-row{display:flex;gap:12px;margin-top:10px}
+.stat{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px 14px;flex:1}
+.stat-num{font-size:22px;font-weight:500;color:var(--color-text-primary)}
+.stat-label{font-size:11px;color:var(--color-text-secondary);margin-top:2px}
+.era-badge{display:inline-block;background:#F5C518;color:#2C2C2A;font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;padding:4px 10px;border-radius:4px;margin-bottom:12px}
+.canvas-wrap{width:200px;height:260px;position:relative}
+svg.faces{width:200px;height:260px}
+.face{transition:cx .8s cubic-bezier(.4,0,.2,1),cy .8s cubic-bezier(.4,0,.2,1),opacity .6s;cursor:default}
+.face circle{transition:all .5s}
+.tamagotchi-illo{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);opacity:0;transition:opacity .5s}
+</style>
+
+<div class="story">
+  <div style="padding:32px 0 24px 0">
+    <div class="era-badge">Era 01 · 1996</div>
+    <h2 style="font-size:26px;font-weight:500;line-height:1.2;color:var(--color-text-primary);max-width:400px">O primeiro bichinho cabia no bolso.</h2>
+  </div>
+
+  <div class="chapter">
+    <div class="sticky-visual">
+      <div class="canvas-wrap">
+        <svg class="faces" id="facesSvg" viewBox="0 0 200 260"></svg>
+        <div class="tamagotchi-illo" id="tamaIllo">
+          <svg width="90" height="110" viewBox="0 0 90 110">
+            <ellipse cx="45" cy="60" rx="38" ry="44" fill="#F0E9D9" stroke="#2C2C2A" stroke-width="2.5"/>
+            <rect x="18" y="32" width="54" height="42" rx="4" fill="#2C2C2A"/>
+            <rect x="22" y="36" width="46" height="34" rx="2" fill="#9CB97A"/>
+            <rect x="34" y="46" width="6" height="6" fill="#2C2C2A"/>
+            <rect x="50" y="46" width="6" height="6" fill="#2C2C2A"/>
+            <rect x="28" y="57" width="34" height="9" fill="#2C2C2A"/>
+            <rect x="32" y="61" width="6" height="3" fill="#9CB97A"/>
+            <rect x="52" y="61" width="6" height="3" fill="#9CB97A"/>
+            <circle cx="28" cy="90" r="7" fill="#2C2C2A"/>
+            <circle cx="45" cy="95" r="7" fill="#2C2C2A"/>
+            <circle cx="62" cy="90" r="7" fill="#2C2C2A"/>
+            <line x1="45" y1="32" x2="45" y2="16" stroke="#2C2C2A" stroke-width="2"/>
+            <circle cx="45" cy="12" r="5" fill="none" stroke="#2C2C2A" stroke-width="2"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="scroll-steps">
+      <div class="step" data-step="0">
+        <div class="step-content">
+          <div class="speech-bubble">
+            <div class="speaker">Lia</div>
+            <p class="speech-text">Vó, antes desse foguinho do TikTok aqui no meu telefone teve outros bichinhos. O primeiro de todos foi este aqui. Cabia na mão. Vivia chiando.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="step" data-step="1">
+        <div class="step-content">
+          <div class="speech-bubble" style="margin-left:8px">
+            <div class="speech-bubble" style="background:var(--color-background-secondary);margin-bottom:0">
+              <div class="speaker" style="color:#3B6D11">Iaiá</div>
+              <p class="speech-text">Eita. Isso aí eu lembro. Sua mãe Carla tinha um desses quando era mocinha. Vivia chiando no fundo da bolsa dela.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step" data-step="2">
+        <div class="step-content">
+          <div class="explainer-box">
+            <div class="explainer-label">O que é</div>
+            <p class="explainer-text">Um ovo de plástico com um bicho de pixel dentro. Cabia na mão, vinha numa correntinha. Feito no Japão pela Bandai em 1996. O bicho precisava de comida, banho, sono — e limpeza de cocô na tela.</p>
+            <div class="stat-row">
+              <div class="stat"><div class="stat-num">1996</div><div class="stat-label">Bandai · Japão</div></div>
+              <div class="stat"><div class="stat-num">40M+</div><div class="stat-label">unidades vendidas</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step" data-step="3">
+        <div class="step-content">
+          <div class="speech-bubble">
+            <div class="speaker">Iaiá</div>
+            <p class="speech-text">Mas não morria não, Lia. Isso é invenção sua. Era brinquedinho de criança, não morria coisa nenhuma.</p>
+          </div>
+          <div class="speech-bubble" style="margin-top:10px;background:var(--color-background-secondary)">
+            <div class="speaker" style="color:#3B6D11">Lia</div>
+            <p class="speech-text">Morria sim, vó. Aparecia um anjinho na tela. Ficava lá. Não tinha como ressuscitar.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="step" data-step="4">
+        <div class="step-content">
+          <div class="explainer-box" style="border-left-color:#D85A30">
+            <div class="explainer-label">Como funcionava</div>
+            <p class="explainer-text">Três botões. Você dava comida, dava banho, brincava, limpava. Se deixasse sem atenção por tempo demais, o bicho adoecia. E morria de verdade — aparecia um anjo na tela. A única saída era apertar reset e começar do zero.</p>
+            <div class="stat-row">
+              <div class="stat"><div class="stat-num">5 min</div><div class="stat-label">a cada hora</div></div>
+              <div class="stat"><div class="stat-num" style="color:#D85A30">morte</div><div class="stat-label">sem ressurreição</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step" data-step="5">
+        <div class="step-content">
+          <div class="explainer-box" style="border-left-color:#534AB7">
+            <div class="explainer-label">O lado de trás · responsabilidade afetiva</div>
+            <p class="explainer-text">O Tamagotchi não era só um brinquedo — era o primeiro experimento em larga escala com o que pesquisadores chamam de <strong>responsabilidade afetiva digital</strong>: a sensação de que um ser virtual depende de você. A morte real do bicho era o mecanismo. O medo de perder criava o hábito de voltar.</p>
+            <p class="explainer-text" style="margin-top:10px">Essa lógica de companheiro digital — que precisa de cuidado, que responde, que pode morrer — seria copiada e reinventada nos trinta anos seguintes.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="step" data-step="6">
+        <div class="step-content">
+          <div class="speech-bubble">
+            <div class="speaker">Lia</div>
+            <p class="speech-text">Trinta anos depois, vó. O bichinho do meu telefone também pede atenção todo dia. Mas agora é o meu amigo que fica me cobrando no lugar do bicho.</p>
+          </div>
+          <div style="margin-top:14px;padding:12px 16px;border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;gap:12px">
+            <span style="font-size:28px">→</span>
+            <div>
+              <div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.12em;color:var(--color-text-secondary)">próxima era</div>
+              <div style="font-size:15px;color:var(--color-text-primary)">2012 · Pou — o bichinho vira aplicativo</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const STEPS = 7;
+const facesSvg = document.getElementById('facesSvg');
+const tamaIllo = document.getElementById('tamaIllo');
+
+function rnd(min,max){return min+Math.random()*(max-min)}
+
+const allFaces = [];
+for(let i=0;i<42;i++){
+  const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+  g.classList.add('face');
+  const cx = rnd(10,190), cy = rnd(10,250);
+  const r = 7;
+  const head = document.createElementNS('http://www.w3.org/2000/svg','circle');
+  head.setAttribute('cx',cx);head.setAttribute('cy',cy);
+  head.setAttribute('r',r);
+  head.setAttribute('fill','#E5DCC4');
+  head.setAttribute('stroke','#2C2C2A');
+  head.setAttribute('stroke-width','1');
+  const leyeEl = document.createElementNS('http://www.w3.org/2000/svg','circle');
+  leyeEl.setAttribute('cx',cx-2.5);leyeEl.setAttribute('cy',cy-1.5);
+  leyeEl.setAttribute('r','1.2');leyeEl.setAttribute('fill','#2C2C2A');
+  const reyeEl = document.createElementNS('http://www.w3.org/2000/svg','circle');
+  reyeEl.setAttribute('cx',cx+2.5);reyeEl.setAttribute('cy',cy-1.5);
+  reyeEl.setAttribute('r','1.2');reyeEl.setAttribute('fill','#2C2C2A');
+  const mouth = document.createElementNS('http://www.w3.org/2000/svg','path');
+  mouth.setAttribute('d',`M${cx-2.5} ${cy+2.5} Q${cx} ${cy+4.5} ${cx+2.5} ${cy+2.5}`);
+  mouth.setAttribute('fill','none');mouth.setAttribute('stroke','#2C2C2A');mouth.setAttribute('stroke-width','0.8');
+  g.appendChild(head);g.appendChild(leyeEl);g.appendChild(reyeEl);g.appendChild(mouth);
+  facesSvg.appendChild(g);
+  allFaces.push({g, head, leyeEl, reyeEl, mouth, ox:cx, oy:cy});
+}
+
+function moveFaces(positions, highlight){
+  allFaces.forEach((f,i)=>{
+    const pos = positions[i] || {x:rnd(10,190), y:rnd(10,250), show:false};
+    const els = f.g.querySelectorAll('circle,path');
+    els.forEach(el=>{
+      el.style.opacity = pos.show ? '1' : '0.15';
+    });
+    if(f.head){
+      f.head.style.fill = (highlight && pos.show) ? highlight : '#E5DCC4';
+    }
+    const dx = pos.x - parseFloat(f.head.getAttribute('cx'));
+    const dy = pos.y - parseFloat(f.head.getAttribute('cy'));
+    f.g.style.transition = 'transform .8s cubic-bezier(.4,0,.2,1)';
+    f.g.style.transform = `translate(${dx}px,${dy}px)`;
+  });
+}
+
+function gridPositions(n, highlight, bgShow){
+  const cols = 6, rowH = 28, colW = 30, startX = 16, startY = 20;
+  return allFaces.map((f,i)=>{
+    if(i<n){
+      const col = i%cols, row = Math.floor(i/cols);
+      return {x: startX + col*colW, y: startY + row*rowH, show:true};
+    }
+    return {x:f.ox, y:f.oy, show: bgShow};
+  });
+}
+
+function applyStep(step){
+  tamaIllo.style.opacity = '0';
+  if(step===0){
+    const pos = allFaces.map(f=>({x:f.ox, y:f.oy, show:true}));
+    moveFaces(pos, null);
+  } else if(step===1){
+    const grouped = [];
+    allFaces.forEach((f,i)=>{
+      if(i<20){
+        const col=i%5, row=Math.floor(i/5);
+        grouped.push({x:16+col*34, y:40+row*36, show:true});
+      } else {
+        grouped.push({x:f.ox, y:f.oy, show:false});
+      }
+    });
+    moveFaces(grouped,'#F5C518');
+  } else if(step===2){
+    tamaIllo.style.opacity = '1';
+    const pos = allFaces.map(f=>({x:f.ox, y:f.oy, show:false}));
+    moveFaces(pos, null);
+  } else if(step===3){
+    moveFaces(gridPositions(42,null,true), null);
+    allFaces.forEach((f,i)=>{
+      f.mouth.setAttribute('d',`M${f.ox-2.5} ${f.oy+2.5} Q${f.ox} ${f.oy+2} ${f.ox+2.5} ${f.oy+2.5}`);
+    });
+  } else if(step===4){
+    const grouped = allFaces.map((f,i)=>{
+      if(i<35){
+        const col=i%7, row=Math.floor(i/7);
+        return {x:10+col*26, y:20+row*38, show:true};
+      }
+      return {x:f.ox, y:f.oy, show:false};
+    });
+    moveFaces(grouped,'#E5DCC4');
+    allFaces.forEach((f,i)=>{
+      if(i<5){
+        f.head.style.fill='#F09595';
+      }
+    });
+  } else if(step===5){
+    const pos = allFaces.map((f,i)=>{
+      return {x: rnd(10,190), y: rnd(10,250), show: i%3!==0};
+    });
+    moveFaces(pos, null);
+  } else if(step===6){
+    moveFaces(gridPositions(42,'#F5C518',true), '#F5C518');
+  }
+}
+
+const stepEls = document.querySelectorAll('.step');
+const contents = document.querySelectorAll('.step-content');
+
+const obs = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    const content = e.target.querySelector('.step-content');
+    if(e.isIntersecting){
+      content.classList.add('visible');
+      applyStep(parseInt(e.target.dataset.step));
+    } else {
+      content.classList.remove('visible');
+    }
+  });
+},{threshold:.4, rootMargin:'-10% 0px -30% 0px'});
+
+stepEls.forEach(s=>obs.observe(s));
+applyStep(0);
+</script>
