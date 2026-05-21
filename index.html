@@ -259,12 +259,12 @@ body.era-2015 { --current-glow: var(--era15-glow); }
 
 /* ========== ERA SCREEN ========== */
 .era-screen {
-  display: none;
+  display: block; /* Todas ficam carregadas na sequência */
   min-height: 100vh;
   position: relative;
   z-index: 2;
+  margin-bottom: 8vh; /* Espaço confortável entre o fim de uma era e o início da outra */
 }
-.era-screen.active { display: block; }
 
 .era-bar {
   padding: 18px 36px;
@@ -1383,45 +1383,55 @@ function renderizarErasContainer() {
 
 function entrarEra(era) {
   estadoAtual.era = era;
-  estadoAtual.cena = 0;
-  estadoAtual.scriptAtual = SCRIPTS[era];
-
-  // esconde splash e outras eras + ending
+  
+  // Esconde o menu inicial (splash)
   document.getElementById('splash').style.display = 'none';
-  document.getElementById('ending').classList.remove('active');
-  document.body.classList.remove('splash-mode', 'era-1996', 'era-2012', 'era-2015');
-  document.body.classList.add(`era-${era}`);
-
-  document.querySelectorAll('.era-screen').forEach(el => el.classList.remove('active'));
-  document.getElementById(`era-${era}`).classList.add('active');
-
-  // esconde bridge enquanto há cenas
-  document.getElementById(`bridge-${era}`).style.display = 'none';
-
-  renderizarCena();
-  window.scrollTo({ top: 0, behavior: 'instant' });
-
-  // Ativa o Scrollytelling observando os blocos invisíveis
-  const scrollSteps = document.querySelectorAll(`#steps-${era} .scroll-step`);
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const cenaIndex = parseInt(entry.target.getAttribute('data-cena'), 10);
-        if (estadoAtual.cena !== cenaIndex) {
-          estadoAtual.cena = cenaIndex;
-          renderizarCena();
-        }
-      }
-    });
-  }, {
-    root: null,
-    rootMargin: "-45% 0px -45% 0px", // Dispara exatamente quando a div invisível passa pelo meio da tela
-    threshold: 0
-  });
-
-  scrollSteps.forEach(step => observer.observe(step));
+  
+  // Move a tela suavemente até a era escolhida
+  const alvo = document.getElementById(`era-${era}`);
+  if (alvo) {
+    alvo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 }
 
+// Inicializa os observadores de rolagem para todas as salas de uma vez só
+function inicializarScrollytellingGlobal() {
+  const eras = ['1996', '2012', '2015'];
+  
+  eras.forEach(era => {
+    // Renderiza a primeira cena de cada uma para não iniciar em branco
+    estadoAtual.era = era;
+    estadoAtual.cena = 0;
+    estadoAtual.scriptAtual = SCRIPTS[era];
+    renderizarCena();
+
+    const scrollSteps = document.querySelectorAll(`#steps-${era} .scroll-step`);
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const cenaIndex = parseInt(entry.target.getAttribute('data-cena'), 10);
+          
+          // Atualiza o estado global com a era e a cena que estão passando no meio da tela
+          estadoAtual.era = era;
+          estadoAtual.cena = cenaIndex;
+          estadoAtual.scriptAtual = SCRIPTS[era];
+          
+          // Muda as cores de fundo (glow radial) dinamicamente com base na era ativa
+          document.body.classList.remove('era-1996', 'era-2012', 'era-2015');
+          document.body.classList.add(`era-${era}`);
+          
+          renderizarCena();
+        }
+      });
+    }, {
+      root: null,
+      rootMargin: "-45% 0px -45% 0px",
+      threshold: 0
+    });
+
+    scrollSteps.forEach(step => observer.observe(step));
+  });
+}
 function voltarSplash() {
   document.getElementById('splash').style.display = 'flex';
   document.getElementById('ending').classList.remove('active');
@@ -1612,8 +1622,16 @@ function proximaCena() {
     const nextStep = document.querySelector(`#steps-${era} .scroll-step[data-cena="${cena + 1}"]`);
     if (nextStep) nextStep.scrollIntoView({ behavior: 'smooth', block: 'center' });
   } else {
-    const bridge = document.getElementById(`bridge-${era}`);
-    if (bridge) bridge.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // Se chegou ao fim do roteiro, rola suavemente para o cabeçalho da próxima era empilhada abaixo
+    const proximasEras = { '1996': '2012', '2012': '2015', '2015': 'ending' };
+    const proxima = proximasEras[era];
+    
+    if (proxima === 'ending') {
+      document.getElementById('ending').classList.add('active');
+      document.getElementById('ending').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else if (proxima) {
+      document.getElementById(`era-${proxima}`).scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 }
 
@@ -1622,6 +1640,9 @@ function cenaAnterior() {
   if (cena > 0) {
     const prevStep = document.querySelector(`#steps-${era} .scroll-step[data-cena="${cena - 1}"]`);
     if (prevStep) prevStep.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  } else {
+    // Se tentar voltar antes da primeira cena, rola para o topo da era atual
+    document.getElementById(`era-${era}`).scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 }
 function cenaAnterior() {
@@ -1653,6 +1674,7 @@ document.addEventListener('keydown', (e) => {
 
 // init
 renderizarErasContainer();
+inicializarScrollytellingGlobal();
 
 </script>
 </body>
