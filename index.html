@@ -1,278 +1,1651 @@
-
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bichinhos na palma — três gerações lembram</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..900,0..100&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--font-sans,'Sora',sans-serif)}
-.story{width:100%;max-width:700px;margin:0 auto}
-.chapter{position:relative;display:flex;gap:0;min-height:500px}
-.sticky-visual{position:sticky;top:0;width:220px;flex-shrink:0;height:100vh;display:flex;align-items:center;justify-content:center}
-.scroll-steps{flex:1;padding:0 0 0 20px}
-.step{min-height:70vh;display:flex;align-items:center;padding:20px 0}
-.step-content{opacity:0;transform:translateY(16px);transition:opacity .5s,transform .5s;pointer-events:none;width:100%}
-.step-content.visible{opacity:1;transform:none;pointer-events:auto}
-.speech-bubble{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:16px 18px;position:relative;margin-bottom:12px}
-.speech-bubble::before{content:'';position:absolute;left:-10px;top:20px;border:5px solid transparent;border-right-color:var(--color-border-tertiary)}
-.speech-bubble::after{content:'';position:absolute;left:-8.5px;top:20px;border:5px solid transparent;border-right-color:var(--color-background-primary)}
-.speaker{font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--color-text-secondary);margin-bottom:6px}
-.speech-text{font-size:15px;line-height:1.55;color:var(--color-text-primary)}
-.explainer-box{background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:16px 18px;border-left:3px solid #888}
-.explainer-label{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.12em;color:var(--color-text-secondary);margin-bottom:8px}
-.explainer-text{font-size:14px;line-height:1.6;color:var(--color-text-primary)}
-.stat-row{display:flex;gap:12px;margin-top:10px}
-.stat{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px 14px;flex:1}
-.stat-num{font-size:22px;font-weight:500;color:var(--color-text-primary)}
-.stat-label{font-size:11px;color:var(--color-text-secondary);margin-top:2px}
-.era-badge{display:inline-block;background:#F5C518;color:#2C2C2A;font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;padding:4px 10px;border-radius:4px;margin-bottom:12px}
-.canvas-wrap{width:200px;height:260px;position:relative}
-svg.faces{width:200px;height:260px}
-.face{transition:cx .8s cubic-bezier(.4,0,.2,1),cy .8s cubic-bezier(.4,0,.2,1),opacity .6s;cursor:default}
-.face circle{transition:all .5s}
-.tamagotchi-illo{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);opacity:0;transition:opacity .5s}
+/* ========== TOKENS ========== */
+:root {
+  --bg: #0A0B14;
+  --bg-soft: #11131F;
+  --bg-card: #161829;
+  --ink: #F2EDE0;
+  --ink-mute: #A8A89C;
+  --ink-dim: #5C5F6E;
+  --line: #2A2D3F;
+
+  /* cores por era */
+  --era96: #B7E07A;        /* verde-LCD Tamagotchi */
+  --era96-deep: #6B9E3A;
+  --era96-glow: rgba(183, 224, 122, 0.18);
+
+  --era12: #F0B27A;        /* pêssego Pou */
+  --era12-deep: #C97D44;
+  --era12-glow: rgba(240, 178, 122, 0.20);
+
+  --era15: #FFCD3C;        /* amarelo-fogo Snapchat */
+  --era15-deep: #D49000;
+  --era15-glow: rgba(255, 205, 60, 0.22);
+
+  --display: 'Fraunces', Georgia, serif;
+  --sans: 'IBM Plex Sans', sans-serif;
+  --mono: 'IBM Plex Mono', monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* sutil noise no fundo, dá grão de filme */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.95 0 0 0 0 0.92 0 0 0 0 0.85 0 0 0 0.04 0'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>");
+  opacity: 0.5;
+  z-index: 100;
+  mix-blend-mode: overlay;
+}
+
+/* glow radial central, muda de cor por era */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 80% 55% at 50% 60%, var(--current-glow, transparent) 0%, transparent 70%);
+  transition: background 1.2s ease;
+  z-index: 0;
+}
+
+body.era-1996 { --current-glow: var(--era96-glow); }
+body.era-2012 { --current-glow: var(--era12-glow); }
+body.era-2015 { --current-glow: var(--era15-glow); }
+
+/* ========== TIPOGRAFIA ========== */
+.display {
+  font-family: var(--display);
+  font-weight: 350;
+  letter-spacing: -0.025em;
+  font-variation-settings: "opsz" 144, "SOFT" 30;
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-weight: 500;
+  color: var(--ink-mute);
+}
+
+/* ========== SPLASH ========== */
+.splash {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 2;
+}
+.splash-top {
+  padding: 28px 36px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+}
+.brand {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+.brand b { color: var(--ink); font-weight: 600; }
+.splash-meta {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+.splash-center {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 36px;
+}
+.splash-content {
+  max-width: 920px;
+  text-align: center;
+}
+.splash-content .eyebrow {
+  margin-bottom: 32px;
+  display: inline-block;
+}
+.splash-content h1 {
+  font-family: var(--display);
+  font-weight: 350;
+  font-size: clamp(48px, 8vw, 108px);
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+  font-variation-settings: "opsz" 144, "SOFT" 20;
+  margin-bottom: 28px;
+}
+.splash-content h1 em {
+  font-style: italic;
+  font-weight: 300;
+  color: var(--ink-mute);
+}
+.splash-content .lede {
+  max-width: 640px;
+  margin: 0 auto 56px;
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ink-mute);
+  font-weight: 300;
+}
+.splash-content .lede strong {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+/* CTAs - escolha de era */
+.era-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  max-width: 880px;
+  margin: 0 auto;
+}
+.era-card {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  padding: 28px 24px 24px;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  color: var(--ink);
+  transition: all 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+.era-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--card-color);
+  transform: scaleX(0.15);
+  transform-origin: left;
+  transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.era-card:hover {
+  background: var(--bg-soft);
+  border-color: var(--card-color);
+  transform: translateY(-4px);
+}
+.era-card:hover::before { transform: scaleX(1); }
+.era-card[data-era="1996"] { --card-color: var(--era96); }
+.era-card[data-era="2012"] { --card-color: var(--era12); }
+.era-card[data-era="2015"] { --card-color: var(--era15); }
+
+.era-card .ec-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-bottom: 18px;
+}
+.era-card .ec-year {
+  font-family: var(--display);
+  font-weight: 300;
+  font-size: 42px;
+  letter-spacing: -0.025em;
+  line-height: 1;
+  margin-bottom: 6px;
+  color: var(--card-color);
+  font-variation-settings: "opsz" 144;
+}
+.era-card .ec-name {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 22px;
+  letter-spacing: -0.015em;
+  margin-bottom: 18px;
+}
+.era-card .ec-desc {
+  font-size: 13.5px;
+  color: var(--ink-mute);
+  line-height: 1.5;
+}
+.era-card .ec-cta {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--card-color);
+  margin-top: 22px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.era-card .ec-mini {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+}
+.era-card .ec-mini-dot {
+  width: 18px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--ink-dim);
+  opacity: 0.4;
+}
+
+/* ========== ERA SCREEN ========== */
+.era-screen {
+  display: none;
+  min-height: 100vh;
+  position: relative;
+  z-index: 2;
+}
+.era-screen.active { display: block; }
+
+.era-bar {
+  padding: 18px 36px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(10, 11, 20, 0.96);
+  backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.era-bar-left { display: flex; align-items: center; gap: 18px; }
+.btn-back {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-back:hover { border-color: var(--ink-mute); background: var(--bg-card); }
+.era-bar-id {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+.era-bar-id b { color: var(--era-color); font-weight: 600; }
+
+.progress-track {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.progress-step {
+  width: 28px;
+  height: 2px;
+  background: var(--line);
+  transition: background 0.3s;
+}
+.progress-step.done { background: var(--era-color); }
+.progress-step.current { background: var(--era-color); height: 3px; }
+
+/* títulos de era */
+.era-head {
+  padding: 80px 36px 56px;
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: left;
+  position: relative;
+}
+.era-head .eyebrow {
+  color: var(--era-color);
+  margin-bottom: 22px;
+  display: inline-block;
+}
+.era-head h2 {
+  font-family: var(--display);
+  font-weight: 350;
+  font-size: clamp(40px, 6vw, 78px);
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  font-variation-settings: "opsz" 144, "SOFT" 20;
+  max-width: 920px;
+}
+.era-head h2 em {
+  font-style: italic;
+  font-weight: 300;
+  color: var(--ink-mute);
+}
+
+/* Set per-era variables */
+.era-screen[data-era="1996"] { --era-color: var(--era96); --era-deep: var(--era96-deep); }
+.era-screen[data-era="2012"] { --era-color: var(--era12); --era-deep: var(--era12-deep); }
+.era-screen[data-era="2015"] { --era-color: var(--era15); --era-deep: var(--era15-deep); }
+
+/* ========== STAGE (palco com pessoas) ========== */
+.stage-wrap {
+  padding: 0 36px 80px;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+.stage {
+  position: relative;
+  width: 100%;
+  height: clamp(560px, 75vh, 760px);
+  background:
+    radial-gradient(ellipse at center, rgba(255,255,255,0.025) 0%, transparent 60%),
+    var(--bg-soft);
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+
+/* grid sutil dentro do palco - dá uma referência cartográfica */
+.stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+}
+
+.stage-label {
+  position: absolute;
+  top: 18px; left: 22px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 5;
+}
+.stage-label .pulse {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--era-color);
+  animation: pulse 1.8s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+.stage-counter {
+  position: absolute;
+  top: 18px; right: 22px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  z-index: 5;
+}
+
+/* ========== PESSOAS ========== */
+.persona {
+  position: absolute;
+  width: 92px;
+  height: 110px;
+  transform-origin: center bottom;
+  transition:
+    transform 1s cubic-bezier(0.2, 0.7, 0.2, 1),
+    opacity 0.8s ease,
+    filter 0.8s ease,
+    top 1.1s cubic-bezier(0.2, 0.7, 0.2, 1),
+    left 1.1s cubic-bezier(0.2, 0.7, 0.2, 1);
+  opacity: 0.45;
+  filter: saturate(0.6) brightness(0.85);
+  cursor: default;
+  z-index: 1;
+}
+.persona svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+.persona .pn-name {
+  position: absolute;
+  bottom: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.4s;
+  pointer-events: none;
+}
+.persona.in-group {
+  opacity: 0.55;
+  filter: saturate(0.55) brightness(0.78);
+}
+.persona.echo {
+  opacity: 0.8;
+  filter: saturate(0.85) brightness(0.95);
+  transform: scale(1.05);
+}
+.persona.speaker {
+  opacity: 1;
+  filter: drop-shadow(0 0 16px var(--era-color)) drop-shadow(0 0 30px var(--era-color)) saturate(1) brightness(1);
+  transform: scale(1.18);
+  z-index: 6;
+}
+/* nome do speaker é redundante: já aparece no header do balão */
+.persona.speaker .pn-name { opacity: 0; }
+.persona.dimmed {
+  opacity: 0.18;
+  filter: saturate(0.3) brightness(0.6) blur(0.5px);
+  transform: scale(0.92);
+}
+
+/* anel sutil sob o speaker */
+.persona.speaker::after {
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70%;
+  height: 8px;
+  background: radial-gradient(ellipse, var(--era-color) 0%, transparent 70%);
+  opacity: 0.6;
+  border-radius: 50%;
+  filter: blur(2px);
+}
+
+/* ========== BALÃO DE FALA ========== */
+.speech-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 7;
+}
+.speech-bubble {
+  position: absolute;
+  max-width: 380px;
+  background: var(--bg-card);
+  border: 1px solid var(--era-color);
+  padding: 18px 22px 20px;
+  font-family: var(--sans);
+  font-size: 15.5px;
+  line-height: 1.5;
+  color: var(--ink);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  pointer-events: auto;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+}
+.speech-bubble.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+.speech-bubble .sb-who {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--era-color);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.speech-bubble .sb-who::before {
+  content: "";
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--era-color);
+}
+.speech-bubble .sb-age {
+  color: var(--ink-mute);
+  letter-spacing: 0.16em;
+  font-weight: 400;
+}
+.speech-bubble p { font-weight: 400; }
+.speech-bubble p em { color: var(--era-color); font-style: italic; font-weight: 500; }
+
+/* tail do balão - varia por lado. Truque: usa um pequeno quadrado rotacionado
+   com 2 bordas adjacentes, posicionado pra metade ficar fora do balão. */
+.speech-bubble.has-tail::before {
+  content: "";
+  position: absolute;
+  width: 11px; height: 11px;
+  background: var(--bg-card);
+}
+.speech-bubble.tail-left.has-tail::before {
+  left: -6.5px; top: 26px;
+  border-left: 1px solid var(--era-color);
+  border-bottom: 1px solid var(--era-color);
+  transform: rotate(45deg);
+}
+.speech-bubble.tail-right.has-tail::before {
+  right: -6.5px; top: 26px;
+  border-right: 1px solid var(--era-color);
+  border-top: 1px solid var(--era-color);
+  transform: rotate(45deg);
+}
+.speech-bubble.tail-top.has-tail::before {
+  top: -6.5px; left: 26px;
+  border-left: 1px solid var(--era-color);
+  border-top: 1px solid var(--era-color);
+  transform: rotate(45deg);
+}
+.speech-bubble.tail-bottom.has-tail::before {
+  bottom: -6.5px; left: 26px;
+  border-right: 1px solid var(--era-color);
+  border-bottom: 1px solid var(--era-color);
+  transform: rotate(45deg);
+}
+
+/* ========== INFO TÉCNICA (intervenção) ========== */
+.info-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 11, 20, 0.78);
+  backdrop-filter: blur(8px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+  z-index: 8;
+}
+.info-overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+.info-card {
+  max-width: 560px;
+  margin: 36px;
+  background: var(--bg);
+  border: 1px solid var(--era-color);
+  padding: 36px 36px 32px;
+  position: relative;
+  transform: translateY(12px) scale(0.98);
+  transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.info-overlay.show .info-card { transform: translateY(0) scale(1); }
+.info-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 48px;
+  height: 3px;
+  background: var(--era-color);
+}
+.info-card .ic-tag {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--era-color);
+  margin-bottom: 20px;
+}
+.info-card .ic-title {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 28px;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+}
+.info-card .ic-body {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--ink-mute);
+}
+.info-card .ic-body strong {
+  color: var(--ink);
+  font-weight: 500;
+  background: linear-gradient(transparent 60%, rgba(255,255,255,0.06) 60%);
+  padding: 0 2px;
+}
+.info-card .ic-stat {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-top: 22px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+}
+.info-card .ic-stat-item .label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 6px;
+}
+.info-card .ic-stat-item .value {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 24px;
+  letter-spacing: -0.015em;
+  color: var(--era-color);
+}
+
+/* ========== CONTROLES ========== */
+.controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 36px 36px;
+  gap: 20px;
+}
+.btn-nav {
+  background: transparent;
+  border: 1px solid var(--era-color);
+  color: var(--era-color);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 500;
+  padding: 14px 22px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.btn-nav:hover { background: var(--era-color); color: var(--bg); }
+.btn-nav.primary {
+  background: var(--era-color);
+  color: var(--bg);
+}
+.btn-nav.primary:hover { background: var(--bg); color: var(--era-color); }
+.btn-nav.ghost {
+  border-color: var(--line);
+  color: var(--ink-mute);
+}
+.btn-nav.ghost:hover { background: var(--bg-card); color: var(--ink); border-color: var(--ink-mute); }
+.btn-nav .arr { font-size: 14px; line-height: 1; }
+.btn-nav:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.scene-status {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  text-align: center;
+  flex: 1;
+}
+.scene-status b { color: var(--era-color); font-weight: 600; }
+
+/* ========== TRANSIÇÃO ENTRE ERAS ========== */
+.era-bridge {
+  padding: 56px 36px 80px;
+  max-width: 1100px;
+  margin: 0 auto;
+  border-top: 1px solid var(--line);
+  margin-top: 40px;
+}
+.era-bridge .eyebrow {
+  margin-bottom: 18px;
+  display: inline-block;
+}
+.era-bridge h3 {
+  font-family: var(--display);
+  font-weight: 350;
+  font-size: clamp(28px, 4vw, 44px);
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  font-variation-settings: "opsz" 144;
+  max-width: 720px;
+  margin-bottom: 36px;
+}
+.era-bridge h3 em { font-style: italic; color: var(--ink-mute); }
+.bridge-nav {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+/* ========== ENDING ========== */
+.ending {
+  display: none;
+  min-height: 100vh;
+  padding: 80px 36px;
+  position: relative;
+  z-index: 2;
+}
+.ending.active { display: block; }
+.ending-content {
+  max-width: 820px;
+  margin: 0 auto;
+}
+.ending h2 {
+  font-family: var(--display);
+  font-weight: 350;
+  font-size: clamp(40px, 6vw, 72px);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variation-settings: "opsz" 144, "SOFT" 20;
+  margin-bottom: 32px;
+}
+.ending h2 em { font-style: italic; color: var(--ink-mute); }
+.ending p.lede {
+  font-size: 19px;
+  line-height: 1.55;
+  color: var(--ink-mute);
+  margin-bottom: 26px;
+}
+.ending p.lede strong { color: var(--ink); font-weight: 500; }
+.ending .closing-quote {
+  margin-top: 48px;
+  padding: 36px 32px;
+  border-left: 3px solid var(--era96);
+  background: var(--bg-card);
+  font-family: var(--display);
+  font-style: italic;
+  font-weight: 350;
+  font-size: 24px;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 880px) {
+  .splash-top { padding: 20px 22px; }
+  .splash-center { padding: 40px 22px; }
+  .era-cards { grid-template-columns: 1fr; gap: 12px; }
+  .era-head { padding: 56px 22px 40px; }
+  .stage-wrap { padding: 0 22px 60px; }
+  .stage { height: 540px; }
+  .era-bar { padding: 14px 22px; }
+  .controls { padding: 0 22px 28px; flex-wrap: wrap; }
+  .scene-status { order: 3; width: 100%; text-align: center; }
+  .persona { width: 64px; height: 78px; }
+  .speech-bubble { max-width: 280px; font-size: 14px; padding: 14px 16px; }
+  .info-card { padding: 28px 24px 24px; margin: 20px; }
+  .info-card .ic-title { font-size: 22px; }
+  .info-card .ic-stat { grid-template-columns: 1fr; gap: 14px; }
+}
+
+@media (max-width: 540px) {
+  .progress-track { display: none; }
+  .stage { height: 480px; }
+  .persona { width: 54px; height: 66px; }
+  .persona .pn-name { font-size: 8.5px; }
+  .speech-bubble { max-width: 220px; font-size: 13px; }
+}
+
+/* utilitário - esconder durante transição */
+.fade-out { opacity: 0; transition: opacity 0.4s; }
 </style>
+</head>
+<body class="splash-mode">
 
-<div class="story">
-  <div style="padding:32px 0 24px 0">
-    <div class="era-badge">Era 01 · 1996</div>
-    <h2 style="font-size:26px;font-weight:500;line-height:1.2;color:var(--color-text-primary);max-width:400px">O primeiro bichinho cabia no bolso.</h2>
-  </div>
-
-  <div class="chapter">
-    <div class="sticky-visual">
-      <div class="canvas-wrap">
-        <svg class="faces" id="facesSvg" viewBox="0 0 200 260"></svg>
-        <div class="tamagotchi-illo" id="tamaIllo">
-          <svg width="90" height="110" viewBox="0 0 90 110">
-            <ellipse cx="45" cy="60" rx="38" ry="44" fill="#F0E9D9" stroke="#2C2C2A" stroke-width="2.5"/>
-            <rect x="18" y="32" width="54" height="42" rx="4" fill="#2C2C2A"/>
-            <rect x="22" y="36" width="46" height="34" rx="2" fill="#9CB97A"/>
-            <rect x="34" y="46" width="6" height="6" fill="#2C2C2A"/>
-            <rect x="50" y="46" width="6" height="6" fill="#2C2C2A"/>
-            <rect x="28" y="57" width="34" height="9" fill="#2C2C2A"/>
-            <rect x="32" y="61" width="6" height="3" fill="#9CB97A"/>
-            <rect x="52" y="61" width="6" height="3" fill="#9CB97A"/>
-            <circle cx="28" cy="90" r="7" fill="#2C2C2A"/>
-            <circle cx="45" cy="95" r="7" fill="#2C2C2A"/>
-            <circle cx="62" cy="90" r="7" fill="#2C2C2A"/>
-            <line x1="45" y1="32" x2="45" y2="16" stroke="#2C2C2A" stroke-width="2"/>
-            <circle cx="45" cy="12" r="5" fill="none" stroke="#2C2C2A" stroke-width="2"/>
-          </svg>
-        </div>
-      </div>
-    </div>
-
-    <div class="scroll-steps">
-      <div class="step" data-step="0">
-        <div class="step-content">
-          <div class="speech-bubble">
-            <div class="speaker">Lia</div>
-            <p class="speech-text">Vó, antes desse foguinho do TikTok aqui no meu telefone teve outros bichinhos. O primeiro de todos foi este aqui. Cabia na mão. Vivia chiando.</p>
+<!-- =================== SPLASH =================== -->
+<section class="splash" id="splash">
+  <header class="splash-top">
+    <div class="brand">infográfico · <b>bichinhos na palma</b></div>
+    <div class="splash-meta">trinta anos de cuidado digital</div>
+  </header>
+  <div class="splash-center">
+    <div class="splash-content">
+      <span class="eyebrow">Pets virtuais · 1996 → 2015</span>
+      <h1 class="display">
+        Em cada época, um<br>
+        bichinho <em>diferente</em><br>
+        pedia atenção.
+      </h1>
+      <p class="lede">
+        Pets virtuais não foram apenas brinquedos. Foram <strong>laboratórios</strong> onde se descobriu como prender alguém — primeiro pelo cuidado, depois pelo consumo, depois pela amizade. Em cada época, um grupo diferente lembra como foi.
+      </p>
+      <div class="era-cards">
+        <button class="era-card" data-era="1996" onclick="entrarEra('1996')">
+          <div class="ec-num">01 — capítulo um</div>
+          <div class="ec-year">1996</div>
+          <div class="ec-name">Tamagotchi</div>
+          <div class="ec-mini">
+            <span class="ec-mini-dot"></span>
+            <span class="ec-mini-dot"></span>
+            <span class="ec-mini-dot"></span>
+            <span class="ec-mini-dot"></span>
+            <span class="ec-mini-dot"></span>
           </div>
-        </div>
-      </div>
-
-      <div class="step" data-step="1">
-        <div class="step-content">
-          <div class="speech-bubble" style="margin-left:8px">
-            <div class="speech-bubble" style="background:var(--color-background-secondary);margin-bottom:0">
-              <div class="speaker" style="color:#3B6D11">Iaiá</div>
-              <p class="speech-text">Eita. Isso aí eu lembro. Sua mãe Carla tinha um desses quando era mocinha. Vivia chiando no fundo da bolsa dela.</p>
-            </div>
+          <p class="ec-desc">Um ovo de plástico que chiava no fundo da mochila. Onze pessoas que tiveram um.</p>
+          <div class="ec-cta">Entrar na sala <span>→</span></div>
+        </button>
+        <button class="era-card" data-era="2012" onclick="entrarEra('2012')">
+          <div class="ec-num">02 — capítulo dois</div>
+          <div class="ec-year">2012</div>
+          <div class="ec-name">Pou</div>
+          <div class="ec-mini">
+            <span class="ec-mini-dot"></span>
+            <span class="ec-mini-dot"></span>
+            <span class="ec-mini-dot"></span>
+            <span class="ec-mini-dot"></span>
+            <span class="ec-mini-dot"></span>
           </div>
-        </div>
-      </div>
-
-      <div class="step" data-step="2">
-        <div class="step-content">
-          <div class="explainer-box">
-            <div class="explainer-label">O que é</div>
-            <p class="explainer-text">Um ovo de plástico com um bicho de pixel dentro. Cabia na mão, vinha numa correntinha. Feito no Japão pela Bandai em 1996. O bicho precisava de comida, banho, sono — e limpeza de cocô na tela.</p>
-            <div class="stat-row">
-              <div class="stat"><div class="stat-num">1996</div><div class="stat-label">Bandai · Japão</div></div>
-              <div class="stat"><div class="stat-num">40M+</div><div class="stat-label">unidades vendidas</div></div>
-            </div>
+          <p class="ec-desc">O bichinho mudou de endereço. Foi morar no celular que já tava ali. Doze pessoas que cuidaram.</p>
+          <div class="ec-cta">Entrar na sala <span>→</span></div>
+        </button>
+        <button class="era-card" data-era="2015" onclick="entrarEra('2015')">
+          <div class="ec-num">03 — capítulo três</div>
+          <div class="ec-year">2015</div>
+          <div class="ec-name">Foguinho · Snapchat</div>
+          <div class="ec-mini">
+            <span class="ec-mini-dot"></span>
+            <span class="ec-mini-dot"></span>
+            <span class="ec-mini-dot"></span>
+            <span class="ec-mini-dot"></span>
+            <span class="ec-mini-dot"></span>
           </div>
-        </div>
-      </div>
-
-      <div class="step" data-step="3">
-        <div class="step-content">
-          <div class="speech-bubble">
-            <div class="speaker">Iaiá</div>
-            <p class="speech-text">Mas não morria não, Lia. Isso é invenção sua. Era brinquedinho de criança, não morria coisa nenhuma.</p>
-          </div>
-          <div class="speech-bubble" style="margin-top:10px;background:var(--color-background-secondary)">
-            <div class="speaker" style="color:#3B6D11">Lia</div>
-            <p class="speech-text">Morria sim, vó. Aparecia um anjinho na tela. Ficava lá. Não tinha como ressuscitar.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="step" data-step="4">
-        <div class="step-content">
-          <div class="explainer-box" style="border-left-color:#D85A30">
-            <div class="explainer-label">Como funcionava</div>
-            <p class="explainer-text">Três botões. Você dava comida, dava banho, brincava, limpava. Se deixasse sem atenção por tempo demais, o bicho adoecia. E morria de verdade — aparecia um anjo na tela. A única saída era apertar reset e começar do zero.</p>
-            <div class="stat-row">
-              <div class="stat"><div class="stat-num">5 min</div><div class="stat-label">a cada hora</div></div>
-              <div class="stat"><div class="stat-num" style="color:#D85A30">morte</div><div class="stat-label">sem ressurreição</div></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="step" data-step="5">
-        <div class="step-content">
-          <div class="explainer-box" style="border-left-color:#534AB7">
-            <div class="explainer-label">O lado de trás · responsabilidade afetiva</div>
-            <p class="explainer-text">O Tamagotchi não era só um brinquedo — era o primeiro experimento em larga escala com o que pesquisadores chamam de <strong>responsabilidade afetiva digital</strong>: a sensação de que um ser virtual depende de você. A morte real do bicho era o mecanismo. O medo de perder criava o hábito de voltar.</p>
-            <p class="explainer-text" style="margin-top:10px">Essa lógica de companheiro digital — que precisa de cuidado, que responde, que pode morrer — seria copiada e reinventada nos trinta anos seguintes.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="step" data-step="6">
-        <div class="step-content">
-          <div class="speech-bubble">
-            <div class="speaker">Lia</div>
-            <p class="speech-text">Trinta anos depois, vó. O bichinho do meu telefone também pede atenção todo dia. Mas agora é o meu amigo que fica me cobrando no lugar do bicho.</p>
-          </div>
-          <div style="margin-top:14px;padding:12px 16px;border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;gap:12px">
-            <span style="font-size:28px">→</span>
-            <div>
-              <div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.12em;color:var(--color-text-secondary)">próxima era</div>
-              <div style="font-size:15px;color:var(--color-text-primary)">2012 · Pou — o bichinho vira aplicativo</div>
-            </div>
-          </div>
-        </div>
+          <p class="ec-desc">O bichinho virou amizade. Você cuidava em dupla. Onze pessoas que mantiveram o fogo aceso.</p>
+          <div class="ec-cta">Entrar na sala <span>→</span></div>
+        </button>
       </div>
     </div>
   </div>
-</div>
+</section>
+
+<!-- =================== TELAS DE ERA (geradas via JS) =================== -->
+<main id="eras-container"></main>
+
+<!-- =================== ENDING =================== -->
+<section class="ending" id="ending">
+  <div class="ending-content">
+    <span class="eyebrow" style="color: var(--era15); margin-bottom: 28px; display: inline-block;">Fim · três salas, uma genealogia</span>
+    <h2 class="display">
+      O mesmo truque,<br>
+      <em>refinado três vezes.</em>
+    </h2>
+    <p class="lede">
+      Em 1996, o bichinho morria se você esquecesse. Em 2012, ele ficava sujo e triste, com publicidade no canto da tela. Em 2015, ele <strong>não morava mais sozinho</strong> — dependia de outra pessoa para sobreviver, e a culpa pela morte não era só sua.
+    </p>
+    <p class="lede">
+      Cada geração herdou o mesmo dispositivo emocional: <strong>uma criatura em risco que precisa de você todo dia</strong>. O que mudou foi de onde vem a obrigação. Saiu do bolso, foi pro app, virou a amizade. O TikTok, em 2024, juntou os três.
+    </p>
+    <div class="closing-quote">
+      "A obrigação de cuidar é uma âncora de engajamento muito mais forte do que a mera diversão."
+    </div>
+    <div style="display: flex; gap: 12px; margin-top: 40px; flex-wrap: wrap;">
+      <button class="btn-nav ghost" onclick="voltarSplash()"><span class="arr">←</span> recomeçar</button>
+      <button class="btn-nav" style="border-color: var(--era96); color: var(--era96);" onclick="entrarEra('1996')">1996 — Tamagotchi</button>
+      <button class="btn-nav" style="border-color: var(--era12); color: var(--era12);" onclick="entrarEra('2012')">2012 — Pou</button>
+      <button class="btn-nav" style="border-color: var(--era15); color: var(--era15);" onclick="entrarEra('2015')">2015 — Foguinho</button>
+    </div>
+  </div>
+</section>
 
 <script>
-const STEPS = 7;
-const facesSvg = document.getElementById('facesSvg');
-const tamaIllo = document.getElementById('tamaIllo');
+/* ========== DADOS DAS PESSOAS POR ERA ==========
+   Cada pessoa tem: id, nome, idade-na-época, posição-base no palco (x,y em %),
+   e um set de características visuais.
+*/
 
-function rnd(min,max){return min+Math.random()*(max-min)}
+const PESSOAS = {
+  '1996': [
+    { id: 'p1', nome: 'Carla',    idade: '11 em 96',  x: 18, y: 32, skin: '#C99B7A', cabelo: 'longoLiso',     corCabelo: '#3A1F0A', acessorio: 'tiara',     bocaMood: 'sorri' },
+    { id: 'p2', nome: 'Ricardo',  idade: '13 em 96',  x: 32, y: 22, skin: '#8B5A3C', cabelo: 'tigelinha',     corCabelo: '#0F0904', acessorio: null,        bocaMood: 'neutro' },
+    { id: 'p3', nome: 'Júnior',   idade: '10 em 96',  x: 46, y: 38, skin: '#E3BD96', cabelo: 'curto',         corCabelo: '#A86628', acessorio: 'sardas',    bocaMood: 'aberto' },
+    { id: 'p4', nome: 'Aline',    idade: '12 em 96',  x: 60, y: 24, skin: '#A47148', cabelo: 'cacheadoMedio', corCabelo: '#1A0E08', acessorio: 'brinco',    bocaMood: 'sorri' },
+    { id: 'p5', nome: 'Beto',     idade: '14 em 96',  x: 74, y: 36, skin: '#F2D2B6', cabelo: 'franja',        corCabelo: '#C4A574', acessorio: 'oculos',    bocaMood: 'neutro' },
+    { id: 'p6', nome: 'Cris',     idade: '11 em 96',  x: 86, y: 26, skin: '#6B4226', cabelo: 'afro',          corCabelo: '#1A0E08', acessorio: null,        bocaMood: 'sorri' },
+    { id: 'p7', nome: 'Daniel',   idade: '9 em 96',   x: 14, y: 60, skin: '#D2A37C', cabelo: 'curto',         corCabelo: '#3D2410', acessorio: null,        bocaMood: 'aberto' },
+    { id: 'p8', nome: 'Érica',    idade: '13 em 96',  x: 28, y: 68, skin: '#A07050', cabelo: 'rabicho',       corCabelo: '#2A150A', acessorio: 'tiara',     bocaMood: 'sorri' },
+    { id: 'p9', nome: 'Fabi',     idade: '10 em 96',  x: 42, y: 60, skin: '#E8C7A0', cabelo: 'mariaChiquinha', corCabelo: '#7A4A1F', acessorio: null,       bocaMood: 'neutro' },
+    { id: 'p10', nome: 'Glauco',  idade: '15 em 96',  x: 56, y: 70, skin: '#8B5A3C', cabelo: 'medioOndulado', corCabelo: '#0F0904', acessorio: 'oculos',    bocaMood: 'sorri' },
+    { id: 'p11', nome: 'Helena',  idade: '11 em 96',  x: 72, y: 64, skin: '#F2D2B6', cabelo: 'cocoLateral',   corCabelo: '#D4A574', acessorio: 'brinco',    bocaMood: 'aberto' },
+  ],
+  '2012': [
+    { id: 'p1', nome: 'Bia',      idade: '12 em 12', x: 16, y: 30, skin: '#A07050', cabelo: 'longoLiso',     corCabelo: '#1F0F08', acessorio: 'fone',      bocaMood: 'sorri' },
+    { id: 'p2', nome: 'Théo',     idade: '11 em 12', x: 30, y: 22, skin: '#D2A37C', cabelo: 'cacheadoMedio', corCabelo: '#6B3F1A', acessorio: null,        bocaMood: 'neutro' },
+    { id: 'p3', nome: 'Lara',     idade: '10 em 12', x: 44, y: 34, skin: '#6B4226', cabelo: 'tranças',       corCabelo: '#0A0604', acessorio: 'brinco',    bocaMood: 'aberto' },
+    { id: 'p4', nome: 'Yuri',     idade: '13 em 12', x: 58, y: 24, skin: '#E3BD96', cabelo: 'moicano',       corCabelo: '#C44A1F', acessorio: null,        bocaMood: 'sorri' },
+    { id: 'p5', nome: 'Mari',     idade: '9 em 12',  x: 72, y: 36, skin: '#F2D2B6', cabelo: 'chiquinhas',    corCabelo: '#D4A574', acessorio: 'tiara',     bocaMood: 'aberto' },
+    { id: 'p6', nome: 'Davi',     idade: '14 em 12', x: 86, y: 26, skin: '#8B5A3C', cabelo: 'raspado',       corCabelo: '#0F0904', acessorio: null,        bocaMood: 'neutro' },
+    { id: 'p7', nome: 'Sofia',    idade: '11 em 12', x: 18, y: 62, skin: '#A47148', cabelo: 'cacheadoCurto', corCabelo: '#1A0E08', acessorio: 'oculos',    bocaMood: 'sorri' },
+    { id: 'p8', nome: 'Iago',     idade: '12 em 12', x: 32, y: 70, skin: '#6B4226', cabelo: 'afroBaixo',     corCabelo: '#0A0604', acessorio: null,        bocaMood: 'neutro' },
+    { id: 'p9', nome: 'Letícia',  idade: '10 em 12', x: 46, y: 62, skin: '#E8C7A0', cabelo: 'franja',        corCabelo: '#A8651F', acessorio: 'sardas',    bocaMood: 'sorri' },
+    { id: 'p10', nome: 'Murilo',  idade: '13 em 12', x: 60, y: 72, skin: '#D2A37C', cabelo: 'longoLiso',     corCabelo: '#3A1F0A', acessorio: null,        bocaMood: 'aberto' },
+    { id: 'p11', nome: 'Pâmela',  idade: '11 em 12', x: 74, y: 64, skin: '#A07050', cabelo: 'cocoLateral',   corCabelo: '#2A150A', acessorio: 'brinco',    bocaMood: 'sorri' },
+    { id: 'p12', nome: 'Caio',    idade: '12 em 12', x: 88, y: 70, skin: '#F2D2B6', cabelo: 'tigelinha',     corCabelo: '#C4A574', acessorio: 'oculos',    bocaMood: 'neutro' },
+  ],
+  '2015': [
+    { id: 'p1', nome: 'Júlia',    idade: '13 em 15', x: 16, y: 28, skin: '#E3BD96', cabelo: 'longoLiso',     corCabelo: '#D4A574', acessorio: 'celular',   bocaMood: 'sorri' },
+    { id: 'p2', nome: 'Pedro',    idade: '14 em 15', x: 30, y: 22, skin: '#8B5A3C', cabelo: 'medioOndulado', corCabelo: '#0F0904', acessorio: null,        bocaMood: 'neutro' },
+    { id: 'p3', nome: 'Ana',      idade: '12 em 15', x: 44, y: 34, skin: '#6B4226', cabelo: 'afro',          corCabelo: '#0A0604', acessorio: 'brinco',    bocaMood: 'aberto' },
+    { id: 'p4', nome: 'Lucas',    idade: '15 em 15', x: 58, y: 24, skin: '#D2A37C', cabelo: 'undercut',      corCabelo: '#C44A1F', acessorio: 'oculos',    bocaMood: 'sorri' },
+    { id: 'p5', nome: 'Renata',   idade: '13 em 15', x: 72, y: 36, skin: '#A47148', cabelo: 'cacheadoMedio', corCabelo: '#1A0E08', acessorio: 'celular',   bocaMood: 'aberto' },
+    { id: 'p6', nome: 'Diego',    idade: '14 em 15', x: 86, y: 26, skin: '#F2D2B6', cabelo: 'franja',        corCabelo: '#A8651F', acessorio: 'oculos',    bocaMood: 'neutro' },
+    { id: 'p7', nome: 'Babi',     idade: '12 em 15', x: 18, y: 62, skin: '#A07050', cabelo: 'tranças',       corCabelo: '#2A150A', acessorio: 'brinco',    bocaMood: 'sorri' },
+    { id: 'p8', nome: 'Caê',      idade: '13 em 15', x: 32, y: 70, skin: '#6B4226', cabelo: 'raspado',       corCabelo: '#0A0604', acessorio: 'celular',   bocaMood: 'aberto' },
+    { id: 'p9', nome: 'Vitória',  idade: '14 em 15', x: 46, y: 60, skin: '#E8C7A0', cabelo: 'cocoLateral',   corCabelo: '#D4A574', acessorio: 'sardas',    bocaMood: 'sorri' },
+    { id: 'p10', nome: 'Heitor',  idade: '15 em 15', x: 60, y: 72, skin: '#D2A37C', cabelo: 'tigelinha',     corCabelo: '#3A1F0A', acessorio: null,        bocaMood: 'neutro' },
+    { id: 'p11', nome: 'Sara',    idade: '12 em 15', x: 74, y: 64, skin: '#8B5A3C', cabelo: 'cacheadoCurto', corCabelo: '#0F0904', acessorio: 'brinco',    bocaMood: 'sorri' },
+  ]
+};
 
-const allFaces = [];
-for(let i=0;i<42;i++){
-  const g = document.createElementNS('http://www.w3.org/2000/svg','g');
-  g.classList.add('face');
-  const cx = rnd(10,190), cy = rnd(10,250);
-  const r = 7;
-  const head = document.createElementNS('http://www.w3.org/2000/svg','circle');
-  head.setAttribute('cx',cx);head.setAttribute('cy',cy);
-  head.setAttribute('r',r);
-  head.setAttribute('fill','#E5DCC4');
-  head.setAttribute('stroke','#2C2C2A');
-  head.setAttribute('stroke-width','1');
-  const leyeEl = document.createElementNS('http://www.w3.org/2000/svg','circle');
-  leyeEl.setAttribute('cx',cx-2.5);leyeEl.setAttribute('cy',cy-1.5);
-  leyeEl.setAttribute('r','1.2');leyeEl.setAttribute('fill','#2C2C2A');
-  const reyeEl = document.createElementNS('http://www.w3.org/2000/svg','circle');
-  reyeEl.setAttribute('cx',cx+2.5);reyeEl.setAttribute('cy',cy-1.5);
-  reyeEl.setAttribute('r','1.2');reyeEl.setAttribute('fill','#2C2C2A');
-  const mouth = document.createElementNS('http://www.w3.org/2000/svg','path');
-  mouth.setAttribute('d',`M${cx-2.5} ${cy+2.5} Q${cx} ${cy+4.5} ${cx+2.5} ${cy+2.5}`);
-  mouth.setAttribute('fill','none');mouth.setAttribute('stroke','#2C2C2A');mouth.setAttribute('stroke-width','0.8');
-  g.appendChild(head);g.appendChild(leyeEl);g.appendChild(reyeEl);g.appendChild(mouth);
-  facesSvg.appendChild(g);
-  allFaces.push({g, head, leyeEl, reyeEl, mouth, ox:cx, oy:cy});
+/* ========== GERADOR DE ROSTOS (SVG) ==========
+   Combina elementos modulares pra produzir cada rosto único.
+*/
+
+function svgCabelo(tipo, cor) {
+  // todos os cabelos sentam sobre uma cabeça oval de 50,38 (centro) raio 24,28
+  const cabelos = {
+    longoLiso: `<path d="M 24 28 Q 22 14 50 12 Q 78 14 76 28 L 80 70 L 76 36 Q 80 64 84 78 L 70 80 Q 56 38 50 38 Q 44 38 30 80 L 16 78 Q 20 64 24 36 Z" fill="${cor}"/>`,
+    longoCacheado: `<path d="M 22 30 Q 20 12 50 10 Q 80 12 78 30 L 84 76 Q 80 60 80 50 L 78 78 L 70 80 Q 64 48 50 38 Q 36 48 30 80 L 22 78 L 20 50 Q 20 60 16 76 Z" fill="${cor}"/><circle cx="78" cy="78" r="4" fill="${cor}"/><circle cx="22" cy="78" r="4" fill="${cor}"/>`,
+    cacheadoMedio: `<path d="M 24 28 Q 22 14 50 12 Q 78 14 76 28 L 78 54 Q 76 44 76 38 Q 78 50 72 60 L 60 56 L 50 60 L 40 56 L 28 60 Q 24 50 24 38 Q 24 44 22 54 Z" fill="${cor}"/>`,
+    cacheadoCurto: `<g><circle cx="34" cy="22" r="9" fill="${cor}"/><circle cx="44" cy="14" r="9" fill="${cor}"/><circle cx="56" cy="14" r="9" fill="${cor}"/><circle cx="66" cy="22" r="9" fill="${cor}"/><circle cx="70" cy="34" r="8" fill="${cor}"/><circle cx="30" cy="34" r="8" fill="${cor}"/></g>`,
+    afro: `<ellipse cx="50" cy="22" rx="36" ry="22" fill="${cor}"/><circle cx="22" cy="32" r="9" fill="${cor}"/><circle cx="78" cy="32" r="9" fill="${cor}"/><circle cx="30" cy="14" r="7" fill="${cor}"/><circle cx="50" cy="8" r="7" fill="${cor}"/><circle cx="70" cy="14" r="7" fill="${cor}"/>`,
+    afroBaixo: `<ellipse cx="50" cy="20" rx="30" ry="13" fill="${cor}"/><circle cx="28" cy="26" r="6" fill="${cor}"/><circle cx="72" cy="26" r="6" fill="${cor}"/>`,
+    curto: `<path d="M 26 32 Q 24 14 50 12 Q 76 14 74 32 L 72 36 Q 70 22 50 22 Q 30 22 28 36 Z" fill="${cor}"/>`,
+    tigelinha: `<path d="M 22 30 Q 22 10 50 10 Q 78 10 78 30 L 78 38 L 22 38 Z" fill="${cor}"/>`,
+    franja: `<path d="M 24 30 Q 24 14 50 12 Q 76 14 76 30 L 78 36 Q 60 26 50 28 Q 40 26 22 36 Z" fill="${cor}"/>`,
+    raspado: `<path d="M 28 30 Q 30 22 50 22 Q 70 22 72 30 L 72 34 Q 60 30 50 30 Q 40 30 28 34 Z" fill="${cor}" opacity="0.85"/>`,
+    undercut: `<path d="M 26 24 Q 26 14 50 12 Q 76 14 74 28 L 70 32 Q 60 24 50 24 Q 40 26 36 30 L 30 34 Q 26 30 26 24 Z" fill="${cor}"/><rect x="28" y="32" width="44" height="3" fill="${cor}" opacity="0.4"/>`,
+    moicano: `<path d="M 42 8 L 46 10 L 50 6 L 54 10 L 58 8 L 56 32 L 44 32 Z" fill="${cor}"/><path d="M 28 30 Q 30 24 36 22 L 36 32 Z" fill="${cor}" opacity="0.6"/><path d="M 72 30 Q 70 24 64 22 L 64 32 Z" fill="${cor}" opacity="0.6"/>`,
+    rabicho: `<path d="M 24 30 Q 22 14 50 12 Q 78 14 76 30 L 74 36 Q 62 28 50 28 Q 38 28 26 36 Z" fill="${cor}"/><path d="M 76 32 Q 86 38 88 56 L 80 58 Q 78 44 74 38 Z" fill="${cor}"/>`,
+    mariaChiquinha: `<path d="M 26 30 Q 24 14 50 12 Q 76 14 74 30 L 72 36 Q 60 30 50 30 Q 40 30 28 36 Z" fill="${cor}"/><circle cx="14" cy="32" r="7" fill="${cor}"/><circle cx="86" cy="32" r="7" fill="${cor}"/><path d="M 12 38 L 10 56 L 18 56 L 16 38 Z" fill="${cor}"/><path d="M 88 38 L 90 56 L 82 56 L 84 38 Z" fill="${cor}"/>`,
+    chiquinhas: `<path d="M 24 30 Q 24 12 50 10 Q 76 12 76 30 L 74 36 L 26 36 Z" fill="${cor}"/><ellipse cx="14" cy="40" rx="6" ry="9" fill="${cor}"/><ellipse cx="86" cy="40" rx="6" ry="9" fill="${cor}"/>`,
+    cocoLateral: `<path d="M 26 28 Q 24 14 50 12 Q 76 14 74 28 L 76 38 Q 64 30 50 30 Q 36 30 24 38 Z" fill="${cor}"/><circle cx="76" cy="20" r="10" fill="${cor}"/>`,
+    medioOndulado: `<path d="M 22 32 Q 22 12 50 10 Q 80 12 78 30 L 80 56 Q 78 46 76 44 L 78 60 L 68 62 L 70 50 Q 60 44 50 44 Q 40 44 32 50 L 32 62 L 22 60 L 24 46 Q 22 50 20 56 Z" fill="${cor}"/>`,
+    tranças: `<path d="M 26 30 Q 26 14 50 12 Q 74 14 74 30 L 72 36 L 28 36 Z" fill="${cor}"/><g><rect x="14" y="34" width="6" height="44" rx="3" fill="${cor}"/><circle cx="17" cy="46" r="3" fill="${cor}" opacity="0.7"/><circle cx="17" cy="58" r="3" fill="${cor}" opacity="0.7"/><circle cx="17" cy="70" r="3" fill="${cor}" opacity="0.7"/></g><g><rect x="80" y="34" width="6" height="44" rx="3" fill="${cor}"/><circle cx="83" cy="46" r="3" fill="${cor}" opacity="0.7"/><circle cx="83" cy="58" r="3" fill="${cor}" opacity="0.7"/><circle cx="83" cy="70" r="3" fill="${cor}" opacity="0.7"/></g>`
+  };
+  return cabelos[tipo] || cabelos.curto;
 }
 
-function moveFaces(positions, highlight){
-  allFaces.forEach((f,i)=>{
-    const pos = positions[i] || {x:rnd(10,190), y:rnd(10,250), show:false};
-    const els = f.g.querySelectorAll('circle,path');
-    els.forEach(el=>{
-      el.style.opacity = pos.show ? '1' : '0.15';
-    });
-    if(f.head){
-      f.head.style.fill = (highlight && pos.show) ? highlight : '#E5DCC4';
+function svgAcessorio(tipo) {
+  const acessorios = {
+    oculos: `<g stroke="#1A1A1A" stroke-width="1.6" fill="none"><circle cx="38" cy="46" r="7" fill="#0A0B14" fill-opacity="0.2"/><circle cx="62" cy="46" r="7" fill="#0A0B14" fill-opacity="0.2"/><line x1="45" y1="46" x2="55" y2="46"/></g>`,
+    tiara: `<path d="M 28 24 Q 50 18 72 24 L 70 28 Q 50 22 30 28 Z" fill="#FFD2E0" stroke="#1A1A1A" stroke-width="0.8"/>`,
+    brinco: `<circle cx="26" cy="52" r="2.2" fill="#FFCD3C"/><circle cx="74" cy="52" r="2.2" fill="#FFCD3C"/>`,
+    sardas: `<g fill="#8B5A3C" opacity="0.6"><circle cx="40" cy="50" r="0.9"/><circle cx="44" cy="52" r="0.9"/><circle cx="56" cy="52" r="0.9"/><circle cx="60" cy="50" r="0.9"/><circle cx="48" cy="48" r="0.7"/><circle cx="52" cy="48" r="0.7"/></g>`,
+    fone: `<path d="M 22 38 Q 22 24 50 22 Q 78 24 78 38" fill="none" stroke="#1A1A1A" stroke-width="2"/><rect x="18" y="38" width="8" height="14" rx="2" fill="#1A1A1A"/><rect x="74" y="38" width="8" height="14" rx="2" fill="#1A1A1A"/>`,
+    celular: `<rect x="76" y="58" width="8" height="14" rx="1.5" fill="#1A1A1A"/><rect x="77" y="60" width="6" height="9" fill="#FFCD3C" opacity="0.7"/>`
+  };
+  return acessorios[tipo] || '';
+}
+
+function svgBoca(mood) {
+  const bocas = {
+    sorri: `<path d="M 44 60 Q 50 64 56 60" fill="none" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round"/>`,
+    neutro: `<line x1="45" y1="61" x2="55" y2="61" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round"/>`,
+    aberto: `<ellipse cx="50" cy="61" rx="3" ry="2" fill="#1A1A1A"/>`
+  };
+  return bocas[mood] || bocas.neutro;
+}
+
+function gerarRostoSVG(pessoa) {
+  const orelhaEsq = `<ellipse cx="22" cy="48" rx="3" ry="5" fill="${pessoa.skin}" stroke="#1A1A1A" stroke-width="0.8"/>`;
+  const orelhaDir = `<ellipse cx="78" cy="48" rx="3" ry="5" fill="${pessoa.skin}" stroke="#1A1A1A" stroke-width="0.8"/>`;
+  const cabeca = `<ellipse cx="50" cy="48" rx="24" ry="28" fill="${pessoa.skin}" stroke="#1A1A1A" stroke-width="1.2"/>`;
+  const olhoEsq = pessoa.acessorio === 'oculos' ? '' : `<circle cx="38" cy="46" r="2.2" fill="#1A1A1A"/>`;
+  const olhoDir = pessoa.acessorio === 'oculos' ? '' : `<circle cx="62" cy="46" r="2.2" fill="#1A1A1A"/>`;
+  const pescoco = `<rect x="44" y="72" width="12" height="10" fill="${pessoa.skin}" stroke="#1A1A1A" stroke-width="1"/>`;
+  const ombros = `<path d="M 26 100 Q 26 84 50 82 Q 74 84 74 100 L 74 110 L 26 110 Z" fill="${getCorRoupa(pessoa.id)}" stroke="#1A1A1A" stroke-width="1"/>`;
+
+  return `<svg viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg">
+    ${ombros}
+    ${pescoco}
+    ${orelhaEsq}${orelhaDir}
+    ${cabeca}
+    ${svgCabelo(pessoa.cabelo, pessoa.corCabelo)}
+    ${olhoEsq}${olhoDir}
+    ${pessoa.acessorio === 'sardas' ? svgAcessorio('sardas') : ''}
+    ${svgBoca(pessoa.bocaMood)}
+    ${pessoa.acessorio === 'oculos' ? svgAcessorio('oculos') : ''}
+    ${pessoa.acessorio === 'tiara' ? svgAcessorio('tiara') : ''}
+    ${pessoa.acessorio === 'brinco' ? svgAcessorio('brinco') : ''}
+    ${pessoa.acessorio === 'fone' ? svgAcessorio('fone') : ''}
+    ${pessoa.acessorio === 'celular' ? svgAcessorio('celular') : ''}
+  </svg>`;
+}
+
+// cor da roupa varia, simples hash
+function getCorRoupa(id) {
+  const cores = ['#3B5BAE', '#A0394A', '#3B7A4F', '#8B4A6E', '#5B4A7F', '#A86B30', '#3D6B7A', '#7A4A30', '#4A6B3B', '#6B4A8B'];
+  const idx = parseInt(id.replace('p',''), 10) % cores.length;
+  return cores[idx];
+}
+
+/* ========== SCRIPTS DE DIÁLOGO ==========
+   Cada cena: 
+   - tipo: 'fala' | 'info' | 'coro' | 'titulo'
+   - speakerId (pra fala): id da pessoa
+   - echo (opcional): ids que reagem junto (mais visíveis que o resto)
+   - dimmed (opcional): ids que recuam mais forte
+   - texto / dados: conteúdo
+   - tail: posição do balão (left/right/top/bottom) — pra não cobrir o rosto
+*/
+
+const SCRIPTS = {
+  '1996': [
+    { tipo: 'titulo',
+      texto: 'A primeira sala. Onze pessoas que tinham entre 9 e 15 anos quando o Tamagotchi chegou ao Brasil em 1997. Cada uma teve um.' },
+
+    { tipo: 'fala', speakerId: 'p1', tail: 'left',
+      texto: 'Era um ovo de plástico com uma corrente. Cabia na mão. A tela era cinza-esverdeada e os bichinhos eram uns quadradinhos pretos andando pra lá e pra cá.' },
+
+    { tipo: 'fala', speakerId: 'p5', tail: 'right',
+      echo: ['p2', 'p10'],
+      texto: 'O meu chiava. Toda hora. Se você tava no ônibus, na fila do recreio, no meio da aula, ele <em>chiava</em>. Não tinha como deixar mudo.' },
+
+    { tipo: 'info',
+      tag: 'O que era',
+      titulo: 'Um ovo de plástico com um bicho de pixel dentro.',
+      body: 'Lançado pela <strong>Bandai</strong> no Japão em novembro de 1996, projetado por Akihiro Yokoi. Tela monocromática, três botões, uma correntinha. Foi pensado como brinquedo de menina japonesa e virou febre global.',
+      stats: [
+        { label: 'Vendidos em 3 anos', value: '40 milhões' },
+        { label: 'Preço Brasil (1997)', value: 'R$ 25–60' }
+      ]
+    },
+
+    { tipo: 'fala', speakerId: 'p8', tail: 'left',
+      texto: 'Eu era tão obcecada que dormia com ele no travesseiro. Se chiasse de madrugada eu acordava, juro.' },
+
+    { tipo: 'fala', speakerId: 'p3', tail: 'right',
+      echo: ['p7', 'p9'],
+      texto: 'Pra mim ele morreu três vezes. A primeira eu chorei muito. A terceira já tinha um certo cansaço. Tipo, "ah, de novo".' },
+
+    { tipo: 'fala', speakerId: 'p1', tail: 'left',
+      echo: ['p4', 'p8', 'p11'],
+      texto: 'Eu lembro <em>exatamente</em> de uma vez que minha mãe levou o meu pra escola dela pra alimentar enquanto eu tava em prova. Ela era diretora. Levava o Tamagotchi na bolsa.' },
+
+    { tipo: 'info',
+      tag: 'O design por trás',
+      titulo: 'O primeiro brinquedo que podia <em>morrer</em>.',
+      body: 'Antes do Tamagotchi, nenhum brinquedo de massa tinha mortalidade irreversível. Se você esquecesse do bichinho, ele virava uma <strong>lápide</strong> (versão japonesa) ou um <strong>anjinho</strong> (versão americana, mais suave). Sem ressurreição. Sem reset emocional.',
+      stats: [
+        { label: 'Cuidados/dia', value: '8 a 12' },
+        { label: 'Tempo/cuidado', value: '~5 min' }
+      ]
+    },
+
+    { tipo: 'fala', speakerId: 'p10', tail: 'right',
+      texto: 'Tinha gente que tomava conta do Tamagotchi do amigo quando ele viajava. Era tipo emprestar um filho.' },
+
+    { tipo: 'fala', speakerId: 'p6', tail: 'left',
+      echo: ['p2', 'p3', 'p7'],
+      texto: 'A escola da minha irmã proibiu. Apreendia. Aí saía no jornal, mãe brigava com diretora. Foi um treco assim, sabe, <em>social</em>.' },
+
+    { tipo: 'fala', speakerId: 'p4', tail: 'right',
+      texto: 'O que ninguém fala é que a gente <em>aprendeu</em> a cuidar. Pode parecer bobo. Mas a primeira vez que você sente medo de algo morrer porque você esqueceu, isso fica.' },
+
+    { tipo: 'info',
+      tag: 'O legado',
+      titulo: 'O "Efeito Tamagotchi"',
+      body: 'Psicólogos dos anos 90 começaram a usar o termo pra descrever o que viam: crianças desenvolvendo <strong>apego emocional genuíno</strong> a uma entidade digital. Luto real. Culpa real. O Tamagotchi provou uma coisa: a obrigação de cuidar prende mais que a diversão.',
+      stats: [
+        { label: 'Onde nasceu', value: 'Tóquio, 1996' },
+        { label: 'Quem cuidava', value: 'a criança' }
+      ]
+    },
+
+    { tipo: 'fala', speakerId: 'p11', tail: 'left',
+      echo: ['p1', 'p4', 'p8'],
+      texto: 'Hoje, anos depois, eu olho pro meu sobrinho com o celular e penso: o bichinho não morreu, ele só mudou de casa.' },
+
+    { tipo: 'fala', speakerId: 'p2', tail: 'right',
+      echo: ['p3', 'p5', 'p6', 'p7', 'p9', 'p10'],
+      texto: 'A gente foi a primeira geração a aprender o que era <em>perder porque não cuidou</em>. Não era a vida. Era treino.' }
+  ],
+
+  '2012': [
+    { tipo: 'titulo',
+      texto: 'A segunda sala. Doze pessoas que tinham entre 9 e 14 anos em 2012, quando o Pou apareceu na App Store. O bichinho agora morava no telefone — e o telefone já estava na mão.' },
+
+    { tipo: 'fala', speakerId: 'p1', tail: 'left',
+      texto: 'O Pou era tipo um cocô marrom com olhos. Sério. Era feio. Mas a gente amava.' },
+
+    { tipo: 'fala', speakerId: 'p4', tail: 'right',
+      echo: ['p2', 'p6'],
+      texto: 'A grande diferença do Tamagotchi: o Pou tinha <em>loja</em>. Você ganhava moedinha jogando os joguinhos do próprio Pou e gastava em roupinha, papel de parede, móvel pro quarto dele.' },
+
+    { tipo: 'info',
+      tag: 'O que era',
+      titulo: 'Um pet alienígena dentro do celular.',
+      body: 'Lançado em agosto de 2012 por <strong>Paul Salameh</strong> (Zakeh Limited), libanês. Diferente do Tamagotchi, o Pou já estava no aparelho que a criança verificava dezenas de vezes ao dia. Não precisava lembrar dele — ele já estava lá.',
+      stats: [
+        { label: 'Downloads (2019)', value: '500 milhões+' },
+        { label: 'Total no Google Play', value: '1 bilhão' }
+      ]
+    },
+
+    { tipo: 'fala', speakerId: 'p9', tail: 'left',
+      texto: 'Minha irmã botava chapéu de princesa nele. Comprava com a moeda que ela ganhou jogando. A loja era infinita.' },
+
+    { tipo: 'fala', speakerId: 'p7', tail: 'right',
+      echo: ['p3', 'p10'],
+      texto: 'Quando ele crescia, ele <em>passava de nível</em>. Bebê, criança, adulto. Mudava o desenho dele. A gente ficava acompanhando, tipo, "meu Pou tá no nível 47 já".' },
+
+    { tipo: 'fala', speakerId: 'p2', tail: 'left',
+      texto: 'O som dele era horrível. Era um "bup bup bup" quando ele andava. Mas tipo... era o <em>jeito</em> dele.' },
+
+    { tipo: 'info',
+      tag: 'O design por trás',
+      titulo: 'O bichinho que não morria mais — só ficava sujo.',
+      body: 'A grande sacada do Pou foi <strong>eliminar a morte</strong>. Se você abandonasse, ele só ficava sujo, magro e triste, com uma carinha de pena. A "morte" virou degradação. E o jogo escondia <strong>anúncios</strong> entre os minigames — vendia sua atenção infantil pra anunciantes em troca de moedinhas pro bichinho.',
+      stats: [
+        { label: 'Onde mora', value: 'no celular' },
+        { label: 'Modelo de negócio', value: 'free + ads' }
+      ]
+    },
+
+    { tipo: 'fala', speakerId: 'p5', tail: 'left',
+      echo: ['p9', 'p11'],
+      texto: 'Tinha menina que <em>vivia</em> só pra deixar o Pou estiloso. Era tipo Polly Pocket, mas que pedia comida.' },
+
+    { tipo: 'fala', speakerId: 'p10', tail: 'right',
+      texto: 'A galera fazia print do Pou pra mostrar. Era tipo... selfie do bichinho. Antes da gente fazer selfie da gente.' },
+
+    { tipo: 'fala', speakerId: 'p12', tail: 'left',
+      echo: ['p4', 'p6', 'p8'],
+      texto: 'Eu lembro de minha mãe brigar comigo dizendo "esse pou aí come mais dinheiro de internet que comida nossa". Eu achei engraçado na época. Hoje entendo.' },
+
+    { tipo: 'info',
+      tag: 'O que mudou',
+      titulo: 'O bichinho parou de morrer. Aprendeu a vender.',
+      body: 'O Pou herdou do Tamagotchi a obrigação de cuidar, mas trocou a punição (morte) por <strong>economia</strong>. Você joga pra ganhar moeda. Gasta moeda em vaidade do bicho. No fundo do app, anúncios em vídeo. <strong>A criança não pagava com dinheiro. Pagava com atenção.</strong>',
+      stats: [
+        { label: 'Tempo médio/dia', value: '15 a 30 min' },
+        { label: 'Idade-alvo', value: '6 a 12 anos' }
+      ]
+    },
+
+    { tipo: 'fala', speakerId: 'p3', tail: 'right',
+      echo: ['p1', 'p5', 'p7', 'p11'],
+      texto: 'Olhando agora, foi onde a gente aprendeu que ter um bichinho era <em>comprar coisas pra ele</em>. Não só dar comida. Era equipar. Era progredir.' },
+
+    { tipo: 'fala', speakerId: 'p8', tail: 'left',
+      echo: ['p2', 'p6', 'p10', 'p12'],
+      texto: 'A diferença é que o Tamagotchi morria sozinho na gaveta. O Pou ficava lá, esperando, pra sempre, com cara de coitado. Acho que era pior.' }
+  ],
+
+  '2015': [
+    { tipo: 'titulo',
+      texto: 'A terceira sala. Onze pessoas que tinham entre 12 e 15 anos em 2015–2016, quando o Snapchat lançou os "Snapstreaks". O bichinho agora pertencia a duas pessoas. Se você falhasse, o outro perdia também.' },
+
+    { tipo: 'fala', speakerId: 'p1', tail: 'left',
+      texto: 'O foguinho aparecia do lado do nome da pessoa. Era um emoji de fogo. <em>🔥</em>. Com um número do lado contando os dias.' },
+
+    { tipo: 'fala', speakerId: 'p4', tail: 'right',
+      echo: ['p2', 'p6'],
+      texto: 'Pra manter, você tinha que mandar uma foto, qualquer foto, pra pessoa, a cada 24 horas. Os dois lados. Se um esquecesse, acabou. Volta a zero.' },
+
+    { tipo: 'info',
+      tag: 'O que era',
+      titulo: 'O bichinho agora pertence a duas pessoas.',
+      body: 'Em março de 2016, o <strong>Snapchat</strong> lançou os "Snapstreaks" na atualização Chat 2.0. Um contador de dias seguidos trocando "snaps" (fotos efêmeras) com cada amigo. O design era brilhante: <strong>transferiu a obrigação do app pra amizade</strong>.',
+      stats: [
+        { label: 'Lançamento', value: 'mar/2016' },
+        { label: 'Tempo p/ perder', value: '24h' }
+      ]
+    },
+
+    { tipo: 'fala', speakerId: 'p7', tail: 'left',
+      texto: 'Eu tinha 23 foguinhos ativos. Mandava "oi" pra todo mundo todo dia. Foto do teto. Foto do pé. Qualquer coisa.' },
+
+    { tipo: 'fala', speakerId: 'p3', tail: 'right',
+      echo: ['p9', 'p11'],
+      texto: 'Quando o relógio tava chegando perto, aparecia uma <em>ampulheta</em>. Era pavor. Tipo, ô meu deus, eu vou perder o foguinho da Babi.' },
+
+    { tipo: 'fala', speakerId: 'p9', tail: 'left',
+      echo: ['p3', 'p5'],
+      texto: 'A gente brigava. Brigava de verdade. Uma vez perdi o foguinho com a Renata e ficamos sem se falar duas semanas. Pela porra de um emoji.' },
+
+    { tipo: 'info',
+      tag: 'O design por trás',
+      titulo: 'O app saiu da equação.',
+      body: 'O Snapchat não precisava te prender mais. <strong>Vocês dois se prendiam mutuamente</strong>. Perder um Snapstreak de 300 dias virou ofensa pessoal — sinal de que a amizade tava esfriando. A plataforma desviou a culpa da retenção pra rede social do usuário.',
+      stats: [
+        { label: 'Quem cuida', value: 'duas pessoas' },
+        { label: 'Quem cobra', value: 'o amigo' }
+      ]
+    },
+
+    { tipo: 'fala', speakerId: 'p10', tail: 'right',
+      texto: 'Quem tinha foguinho de 500 dias era <em>respeitado</em>. Era tipo um casamento. Os números cresciam e era símbolo de lealdade.' },
+
+    { tipo: 'fala', speakerId: 'p5', tail: 'left',
+      echo: ['p1', 'p4', 'p8'],
+      texto: 'Eu pedia pra mãe mandar o snap quando eu tava sem celular. "Mãe, abre meu snap, manda foto do nada, é urgente". Ela achava que eu tava possuída.' },
+
+    { tipo: 'fala', speakerId: 'p6', tail: 'right',
+      texto: 'Quando perdia, dava pra <em>restaurar</em>. Mas só duas vezes por mês. E era escondidinho. Tinha que mendigar suporte.' },
+
+    { tipo: 'info',
+      tag: 'A virada',
+      titulo: 'Quando o cuidado virou capital social.',
+      body: 'O número do foguinho deixou de ser sobre o bichinho e passou a ser sobre <strong>quem você era</strong>. Adolescente com 30 foguinhos ativos = adolescente popular. Quebrar um foguinho de longa data podia destruir amizades reais. A Snap Inc. tinha criado uma <strong>moeda social mensurável</strong>.',
+      stats: [
+        { label: 'Streak mais longa relatada', value: '3000+ dias' },
+        { label: 'Geração mais afetada', value: '12–17 anos' }
+      ]
+    },
+
+    { tipo: 'fala', speakerId: 'p11', tail: 'left',
+      echo: ['p2', 'p7', 'p10'],
+      texto: 'Olhando hoje, é meio assustador. A gente tinha 13 anos e <em>cuidava do foguinho como obrigação</em>. Igual quem tinha Tamagotchi, mas pior, porque a culpa era em dupla.' },
+
+    { tipo: 'fala', speakerId: 'p2', tail: 'right',
+      echo: ['p1', 'p4', 'p5', 'p6', 'p7', 'p8', 'p9', 'p11'],
+      texto: 'A gente foi a geração que aprendeu que <em>amizade tem placar</em>. E que se você não jogar o jogo todo dia, o placar volta a zero.' }
+  ]
+};
+
+/* ========== ESTADO ========== */
+let estadoAtual = {
+  era: null,
+  cena: 0,
+  scriptAtual: null
+};
+
+/* ========== RENDERIZAÇÃO ========== */
+
+function renderizarErasContainer() {
+  const container = document.getElementById('eras-container');
+  const eras = ['1996', '2012', '2015'];
+  const nomes = { '1996': 'Tamagotchi', '2012': 'Pou', '2015': 'Foguinho do Snapchat' };
+  const titulosCap = {
+    '1996': { eyebrow: 'capítulo um · 1996', h2: 'O primeiro bichinho cabia na mão. <em>E podia morrer.</em>' },
+    '2012': { eyebrow: 'capítulo dois · 2012', h2: 'Agora ele morava no celular. <em>E tinha loja.</em>' },
+    '2015': { eyebrow: 'capítulo três · 2015', h2: 'Não era mais o app cobrando. <em>Era o seu amigo.</em>' }
+  };
+
+  let html = '';
+  eras.forEach((era, idx) => {
+    const proxima = eras[idx + 1];
+    const anterior = eras[idx - 1];
+    const total = SCRIPTS[era].length;
+
+    let progressSteps = '';
+    for (let i = 0; i < total; i++) {
+      progressSteps += `<span class="progress-step" data-step="${i}"></span>`;
     }
-    const dx = pos.x - parseFloat(f.head.getAttribute('cx'));
-    const dy = pos.y - parseFloat(f.head.getAttribute('cy'));
-    f.g.style.transition = 'transform .8s cubic-bezier(.4,0,.2,1)';
-    f.g.style.transform = `translate(${dx}px,${dy}px)`;
+
+    let personasHtml = '';
+    PESSOAS[era].forEach(p => {
+      personasHtml += `
+        <div class="persona" id="persona-${era}-${p.id}" data-pid="${p.id}" style="left: ${p.x}%; top: ${p.y}%;">
+          ${gerarRostoSVG(p)}
+          <div class="pn-name">${p.nome} · ${p.idade}</div>
+        </div>`;
+    });
+
+    html += `
+    <section class="era-screen" id="era-${era}" data-era="${era}">
+      <div class="era-bar">
+        <div class="era-bar-left">
+          <button class="btn-back" onclick="voltarSplash()">← índice</button>
+          <span class="era-bar-id">capítulo <b>0${idx+1}</b> · ${nomes[era]}</span>
+        </div>
+        <div class="progress-track" id="progress-${era}">${progressSteps}</div>
+      </div>
+
+      <div class="era-head">
+        <span class="eyebrow">${titulosCap[era].eyebrow}</span>
+        <h2 class="display">${titulosCap[era].h2}</h2>
+      </div>
+
+      <div class="stage-wrap">
+        <div class="stage" id="stage-${era}">
+          <div class="stage-label">
+            <span class="pulse"></span>
+            <span>sala ${idx+1} · ${PESSOAS[era].length} pessoas</span>
+          </div>
+          <div class="stage-counter" id="counter-${era}">cena 1 de ${total}</div>
+          ${personasHtml}
+          <div class="speech-layer" id="speech-${era}"></div>
+          <div class="info-overlay" id="info-${era}">
+            <div class="info-card" id="info-card-${era}"></div>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button class="btn-nav ghost" id="btn-prev-${era}" onclick="cenaAnterior()">
+            <span class="arr">←</span> voltar
+          </button>
+          <div class="scene-status" id="status-${era}">
+            cena <b>1</b> de ${total}
+          </div>
+          <button class="btn-nav primary" id="btn-next-${era}" onclick="proximaCena()">
+            próxima <span class="arr">→</span>
+          </button>
+        </div>
+
+        <div class="era-bridge" id="bridge-${era}" style="display: none;">
+          <span class="eyebrow">fim da sala</span>
+          <h3 class="display">${
+            proxima
+              ? `Três anos depois, em ${proxima}, <em>o bichinho ${era === '1996' ? 'troca de endereço.' : 'pertence a duas pessoas.'}</em>`
+              : `A obrigação saiu do bolso, foi pro app, virou a amizade. <em>O TikTok, em 2024, juntou os três.</em>`
+          }</h3>
+          <div class="bridge-nav">
+            ${anterior ? `<button class="btn-nav ghost" onclick="entrarEra('${anterior}')"><span class="arr">←</span> ${anterior} · ${nomes[anterior]}</button>` : ''}
+            <button class="btn-nav ghost" onclick="voltarSplash()">índice</button>
+            ${proxima
+              ? `<button class="btn-nav primary" onclick="entrarEra('${proxima}')">próxima sala · ${proxima} <span class="arr">→</span></button>`
+              : `<button class="btn-nav primary" onclick="irParaEnding()">leituras finais <span class="arr">→</span></button>`}
+          </div>
+        </div>
+      </div>
+    </section>`;
   });
+  container.innerHTML = html;
 }
 
-function gridPositions(n, highlight, bgShow){
-  const cols = 6, rowH = 28, colW = 30, startX = 16, startY = 20;
-  return allFaces.map((f,i)=>{
-    if(i<n){
-      const col = i%cols, row = Math.floor(i/cols);
-      return {x: startX + col*colW, y: startY + row*rowH, show:true};
+function entrarEra(era) {
+  estadoAtual.era = era;
+  estadoAtual.cena = 0;
+  estadoAtual.scriptAtual = SCRIPTS[era];
+
+  // esconde splash e outras eras + ending
+  document.getElementById('splash').style.display = 'none';
+  document.getElementById('ending').classList.remove('active');
+  document.body.classList.remove('splash-mode', 'era-1996', 'era-2012', 'era-2015');
+  document.body.classList.add(`era-${era}`);
+
+  document.querySelectorAll('.era-screen').forEach(el => el.classList.remove('active'));
+  document.getElementById(`era-${era}`).classList.add('active');
+
+  // esconde bridge enquanto há cenas
+  document.getElementById(`bridge-${era}`).style.display = 'none';
+
+  renderizarCena();
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
+
+function voltarSplash() {
+  document.getElementById('splash').style.display = 'flex';
+  document.getElementById('ending').classList.remove('active');
+  document.querySelectorAll('.era-screen').forEach(el => el.classList.remove('active'));
+  document.body.classList.remove('era-1996', 'era-2012', 'era-2015');
+  document.body.classList.add('splash-mode');
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
+
+function irParaEnding() {
+  document.getElementById('splash').style.display = 'none';
+  document.querySelectorAll('.era-screen').forEach(el => el.classList.remove('active'));
+  document.getElementById('ending').classList.add('active');
+  document.body.classList.remove('era-1996', 'era-2012', 'era-2015');
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
+
+function renderizarCena() {
+  const { era, cena, scriptAtual } = estadoAtual;
+  const total = scriptAtual.length;
+  const cenaData = scriptAtual[cena];
+
+  // limpa todos os estados das pessoas
+  const stage = document.getElementById(`stage-${era}`);
+  const personas = stage.querySelectorAll('.persona');
+  personas.forEach(p => {
+    p.classList.remove('speaker', 'echo', 'dimmed', 'in-group');
+  });
+
+  // esconde info overlay
+  document.getElementById(`info-${era}`).classList.remove('show');
+
+  // limpa balão
+  document.getElementById(`speech-${era}`).innerHTML = '';
+
+  // status
+  document.getElementById(`status-${era}`).innerHTML = `cena <b>${cena+1}</b> de ${total}`;
+  document.getElementById(`counter-${era}`).textContent = `cena ${cena+1} de ${total}`;
+
+  // progress
+  const steps = document.querySelectorAll(`#progress-${era} .progress-step`);
+  steps.forEach((s, i) => {
+    s.classList.remove('done', 'current');
+    if (i < cena) s.classList.add('done');
+    if (i === cena) s.classList.add('current');
+  });
+
+  // botões prev/next
+  document.getElementById(`btn-prev-${era}`).disabled = cena === 0;
+  const btnNext = document.getElementById(`btn-next-${era}`);
+  btnNext.innerHTML = cena === total - 1
+    ? `fim da sala <span class="arr">↓</span>`
+    : `próxima <span class="arr">→</span>`;
+
+  // processa o tipo de cena
+  if (cenaData.tipo === 'titulo') {
+    // título: nenhum speaker. Pessoas em modo grupo + balão flutuante central
+    personas.forEach(p => p.classList.add('in-group'));
+    mostrarBalaoCentral(era, cenaData.texto);
+  }
+  else if (cenaData.tipo === 'fala') {
+    const speaker = stage.querySelector(`[data-pid="${cenaData.speakerId}"]`);
+    if (speaker) speaker.classList.add('speaker');
+
+    if (cenaData.echo && cenaData.echo.length) {
+      cenaData.echo.forEach(eid => {
+        const el = stage.querySelector(`[data-pid="${eid}"]`);
+        if (el) el.classList.add('echo');
+      });
     }
-    return {x:f.ox, y:f.oy, show: bgShow};
-  });
-}
 
-function applyStep(step){
-  tamaIllo.style.opacity = '0';
-  if(step===0){
-    const pos = allFaces.map(f=>({x:f.ox, y:f.oy, show:true}));
-    moveFaces(pos, null);
-  } else if(step===1){
-    const grouped = [];
-    allFaces.forEach((f,i)=>{
-      if(i<20){
-        const col=i%5, row=Math.floor(i/5);
-        grouped.push({x:16+col*34, y:40+row*36, show:true});
-      } else {
-        grouped.push({x:f.ox, y:f.oy, show:false});
+    // resto fica em-grupo (background) ou dimmed
+    personas.forEach(p => {
+      if (!p.classList.contains('speaker') && !p.classList.contains('echo')) {
+        p.classList.add('in-group');
       }
     });
-    moveFaces(grouped,'#F5C518');
-  } else if(step===2){
-    tamaIllo.style.opacity = '1';
-    const pos = allFaces.map(f=>({x:f.ox, y:f.oy, show:false}));
-    moveFaces(pos, null);
-  } else if(step===3){
-    moveFaces(gridPositions(42,null,true), null);
-    allFaces.forEach((f,i)=>{
-      f.mouth.setAttribute('d',`M${f.ox-2.5} ${f.oy+2.5} Q${f.ox} ${f.oy+2} ${f.ox+2.5} ${f.oy+2.5}`);
-    });
-  } else if(step===4){
-    const grouped = allFaces.map((f,i)=>{
-      if(i<35){
-        const col=i%7, row=Math.floor(i/7);
-        return {x:10+col*26, y:20+row*38, show:true};
-      }
-      return {x:f.ox, y:f.oy, show:false};
-    });
-    moveFaces(grouped,'#E5DCC4');
-    allFaces.forEach((f,i)=>{
-      if(i<5){
-        f.head.style.fill='#F09595';
-      }
-    });
-  } else if(step===5){
-    const pos = allFaces.map((f,i)=>{
-      return {x: rnd(10,190), y: rnd(10,250), show: i%3!==0};
-    });
-    moveFaces(pos, null);
-  } else if(step===6){
-    moveFaces(gridPositions(42,'#F5C518',true), '#F5C518');
+
+    // mostra balão ao lado do speaker
+    if (speaker) {
+      const pessoa = PESSOAS[era].find(x => x.id === cenaData.speakerId);
+      mostrarBalaoFala(era, speaker, pessoa, cenaData.texto, cenaData.tail || 'right');
+    }
+  }
+  else if (cenaData.tipo === 'info') {
+    // dim em todos
+    personas.forEach(p => p.classList.add('dimmed'));
+    mostrarInfo(era, cenaData);
+  }
+
+  // verifica se chegou ao fim → mostra bridge
+  if (cena === total - 1) {
+    setTimeout(() => {
+      const bridge = document.getElementById(`bridge-${era}`);
+      bridge.style.display = 'block';
+    }, 300);
+  } else {
+    document.getElementById(`bridge-${era}`).style.display = 'none';
   }
 }
 
-const stepEls = document.querySelectorAll('.step');
-const contents = document.querySelectorAll('.step-content');
-
-const obs = new IntersectionObserver((entries)=>{
-  entries.forEach(e=>{
-    const content = e.target.querySelector('.step-content');
-    if(e.isIntersecting){
-      content.classList.add('visible');
-      applyStep(parseInt(e.target.dataset.step));
-    } else {
-      content.classList.remove('visible');
-    }
+function mostrarBalaoCentral(era, texto) {
+  const layer = document.getElementById(`speech-${era}`);
+  layer.innerHTML = `
+    <div class="speech-bubble show" style="top: 50%; left: 50%; transform: translate(-50%, -50%); max-width: 520px; text-align: center; border-color: var(--era-color); background: var(--bg-card);">
+      <p style="font-style: italic; color: var(--ink-mute); font-size: 16px; line-height: 1.5;">${texto}</p>
+    </div>
+  `;
+  // tira tail
+  layer.querySelector('.speech-bubble').style.borderWidth = '1px';
+  const bubble = layer.querySelector('.speech-bubble');
+  bubble.classList.remove('tail-left','tail-right','tail-top','tail-bottom');
+  // pequena animação
+  requestAnimationFrame(() => {
+    bubble.classList.add('show');
   });
-},{threshold:.4, rootMargin:'-10% 0px -30% 0px'});
+}
 
-stepEls.forEach(s=>obs.observe(s));
-applyStep(0);
+function mostrarBalaoFala(era, speakerEl, pessoa, texto, tail) {
+  const layer = document.getElementById(`speech-${era}`);
+  const rect = speakerEl.getBoundingClientRect();
+  const stage = document.getElementById(`stage-${era}`);
+  const stageRect = stage.getBoundingClientRect();
+
+  // posição da pessoa em px relativos ao stage
+  const px = rect.left - stageRect.left + rect.width / 2;
+  const py = rect.top - stageRect.top + rect.height / 2;
+
+  // calcula posição do balão baseado no tail
+  let bubbleStyle = '';
+  if (tail === 'right') {
+    bubbleStyle = `left: ${px + 56}px; top: ${py - 24}px;`;
+  } else if (tail === 'left') {
+    bubbleStyle = `right: ${stageRect.width - px + 56}px; top: ${py - 24}px;`;
+  } else if (tail === 'top') {
+    bubbleStyle = `left: ${px - 100}px; top: ${py + 70}px;`;
+  } else {
+    bubbleStyle = `left: ${px + 56}px; top: ${py - 24}px;`;
+  }
+
+  const bubble = document.createElement('div');
+  bubble.className = `speech-bubble has-tail tail-${tail}`;
+  bubble.style.cssText = bubbleStyle;
+  bubble.innerHTML = `
+    <div class="sb-who">${pessoa.nome} <span class="sb-age">· ${pessoa.idade}</span></div>
+    <p>${texto}</p>
+  `;
+  layer.appendChild(bubble);
+
+  // valida se o balão tá saindo do stage; se tá, recalcula posição alternativa
+  requestAnimationFrame(() => {
+    bubble.classList.add('show');
+    setTimeout(() => {
+      const br = bubble.getBoundingClientRect();
+      const sr = stage.getBoundingClientRect();
+      if (br.right > sr.right - 8) {
+        bubble.style.left = '';
+        bubble.style.right = `${sr.right - px + 56}px`;
+        bubble.classList.remove('tail-right', 'tail-left');
+        bubble.classList.add('tail-left');
+      }
+      if (br.left < sr.left + 8) {
+        bubble.style.right = '';
+        bubble.style.left = `${px + 56}px`;
+        bubble.classList.remove('tail-left', 'tail-right');
+        bubble.classList.add('tail-right');
+      }
+      if (br.bottom > sr.bottom - 8) {
+        const newTop = py - bubble.offsetHeight - 24;
+        bubble.style.top = `${Math.max(20, newTop)}px`;
+      }
+      if (br.top < sr.top + 40) {
+        bubble.style.top = `${py + 40}px`;
+      }
+    }, 30);
+  });
+}
+
+function mostrarInfo(era, dados) {
+  const overlay = document.getElementById(`info-${era}`);
+  const card = document.getElementById(`info-card-${era}`);
+
+  let statsHtml = '';
+  if (dados.stats && dados.stats.length) {
+    statsHtml = '<div class="ic-stat">';
+    dados.stats.forEach(s => {
+      statsHtml += `
+        <div class="ic-stat-item">
+          <div class="label">${s.label}</div>
+          <div class="value">${s.value}</div>
+        </div>`;
+    });
+    statsHtml += '</div>';
+  }
+
+  card.innerHTML = `
+    <div class="ic-tag">${dados.tag}</div>
+    <div class="ic-title">${dados.titulo}</div>
+    <div class="ic-body">${dados.body}</div>
+    ${statsHtml}
+  `;
+  overlay.classList.add('show');
+}
+
+function proximaCena() {
+  const { cena, scriptAtual } = estadoAtual;
+  if (cena < scriptAtual.length - 1) {
+    estadoAtual.cena++;
+    renderizarCena();
+    // scroll suave pro stage se tiver baixo
+    const stage = document.getElementById(`stage-${estadoAtual.era}`);
+    if (stage) {
+      const stageRect = stage.getBoundingClientRect();
+      if (stageRect.top < 0) {
+        window.scrollTo({ top: window.scrollY + stageRect.top - 80, behavior: 'smooth' });
+      }
+    }
+  } else {
+    // já no fim → scroll pro bridge
+    const bridge = document.getElementById(`bridge-${estadoAtual.era}`);
+    if (bridge) bridge.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+function cenaAnterior() {
+  if (estadoAtual.cena > 0) {
+    estadoAtual.cena--;
+    renderizarCena();
+  }
+}
+
+// fecha info ao clicar fora dele
+document.addEventListener('click', (e) => {
+  if (e.target.classList.contains('info-overlay')) {
+    proximaCena();
+  }
+});
+
+// atalhos de teclado
+document.addEventListener('keydown', (e) => {
+  if (!estadoAtual.era) return;
+  if (e.key === 'ArrowRight' || e.key === ' ') {
+    e.preventDefault();
+    proximaCena();
+  } else if (e.key === 'ArrowLeft') {
+    cenaAnterior();
+  } else if (e.key === 'Escape') {
+    voltarSplash();
+  }
+});
+
+// init
+renderizarErasContainer();
+
 </script>
+</body>
+</html>
