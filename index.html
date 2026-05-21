@@ -744,6 +744,23 @@ body.era-2015 { --current-glow: var(--era15-glow); }
   flex-wrap: wrap;
 }
 
+/* ========== SCROLLYTELLING ========== */
+.scrolly-wrap { position: relative; }
+.sticky-stage {
+  position: sticky;
+  top: 70px; /* Fica preso logo abaixo do menu superior */
+  z-index: 1;
+}
+.steps-container {
+  position: relative;
+  z-index: 2;
+  margin-top: -10vh; 
+}
+.scroll-step {
+  height: 90vh; /* Altura de cada rolagem para forçar o scroll */
+  pointer-events: none; /* Deixa o mouse interagir com o palco por baixo */
+}
+
 /* ========== ENDING ========== */
 .ending {
   display: none;
@@ -1324,33 +1341,26 @@ function renderizarErasContainer() {
         <h2 class="display">${titulosCap[era].h2}</h2>
       </div>
 
-      <div class="stage-wrap">
-        <div class="stage" id="stage-${era}">
-          <div class="stage-label">
-            <span class="pulse"></span>
-            <span>sala ${idx+1} · ${PESSOAS[era].length} pessoas</span>
-          </div>
-          <div class="stage-counter" id="counter-${era}">cena 1 de ${total}</div>
-          ${personasHtml}
-          <div class="speech-layer" id="speech-${era}"></div>
-          <div class="info-overlay" id="info-${era}">
-            <div class="info-card" id="info-card-${era}"></div>
+      <div class="stage-wrap scrolly-wrap">
+        <div class="sticky-stage">
+          <div class="stage" id="stage-${era}">
+            <div class="stage-label">
+              <span class="pulse"></span>
+              <span>sala ${idx+1} · ${PESSOAS[era].length} pessoas</span>
+            </div>
+            ${personasHtml}
+            <div class="speech-layer" id="speech-${era}"></div>
+            <div class="info-overlay" id="info-${era}">
+              <div class="info-card" id="info-card-${era}"></div>
+            </div>
           </div>
         </div>
 
-        <div class="controls">
-          <button class="btn-nav ghost" id="btn-prev-${era}" onclick="cenaAnterior()">
-            <span class="arr">←</span> voltar
-          </button>
-          <div class="scene-status" id="status-${era}">
-            cena <b>1</b> de ${total}
-          </div>
-          <button class="btn-nav primary" id="btn-next-${era}" onclick="proximaCena()">
-            próxima <span class="arr">→</span>
-          </button>
+        <div class="steps-container" id="steps-${era}">
+          ${Array(total).fill(0).map((_, i) => `<div class="scroll-step" data-cena="${i}"></div>`).join('')}
         </div>
 
-        <div class="era-bridge" id="bridge-${era}" style="display: none;">
+        <div class="era-bridge" id="bridge-${era}" style="position: relative; z-index: 3; background: var(--bg); padding-top: 60px; margin-top: 10vh;">
           <span class="eyebrow">fim da sala</span>
           <h3 class="display">${
             proxima
@@ -1390,6 +1400,26 @@ function entrarEra(era) {
 
   renderizarCena();
   window.scrollTo({ top: 0, behavior: 'instant' });
+
+  // Ativa o Scrollytelling observando os blocos invisíveis
+  const scrollSteps = document.querySelectorAll(`#steps-${era} .scroll-step`);
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const cenaIndex = parseInt(entry.target.getAttribute('data-cena'), 10);
+        if (estadoAtual.cena !== cenaIndex) {
+          estadoAtual.cena = cenaIndex;
+          renderizarCena();
+        }
+      }
+    });
+  }, {
+    root: null,
+    rootMargin: "-45% 0px -45% 0px", // Dispara exatamente quando a div invisível passa pelo meio da tela
+    threshold: 0
+  });
+
+  scrollSteps.forEach(step => observer.observe(step));
 }
 
 function voltarSplash() {
@@ -1427,25 +1457,13 @@ function renderizarCena() {
   // limpa balão
   document.getElementById(`speech-${era}`).innerHTML = '';
 
-  // status
-  document.getElementById(`status-${era}`).innerHTML = `cena <b>${cena+1}</b> de ${total}`;
-  document.getElementById(`counter-${era}`).textContent = `cena ${cena+1} de ${total}`;
-
-  // progress
-  const steps = document.querySelectorAll(`#progress-${era} .progress-step`);
-  steps.forEach((s, i) => {
+  // progress visual no menu superior
+  const progressSteps = document.querySelectorAll(`#progress-${era} .progress-step`);
+  progressSteps.forEach((s, i) => {
     s.classList.remove('done', 'current');
     if (i < cena) s.classList.add('done');
     if (i === cena) s.classList.add('current');
   });
-
-  // botões prev/next
-  document.getElementById(`btn-prev-${era}`).disabled = cena === 0;
-  const btnNext = document.getElementById(`btn-next-${era}`);
-  btnNext.innerHTML = cena === total - 1
-    ? `fim da sala <span class="arr">↓</span>`
-    : `próxima <span class="arr">→</span>`;
-
   // processa o tipo de cena
   if (cenaData.tipo === 'titulo') {
     // título: nenhum speaker. Pessoas em modo grupo + balão flutuante central
@@ -1482,15 +1500,7 @@ function renderizarCena() {
     mostrarInfo(era, cenaData);
   }
 
-  // verifica se chegou ao fim → mostra bridge
-  if (cena === total - 1) {
-    setTimeout(() => {
-      const bridge = document.getElementById(`bridge-${era}`);
-      bridge.style.display = 'block';
-    }, 300);
-  } else {
-    document.getElementById(`bridge-${era}`).style.display = 'none';
-  }
+  // A transição de era agora aparece naturalmente ao final do scroll.
 }
 
 function mostrarBalaoCentral(era, texto) {
@@ -1597,25 +1607,23 @@ function mostrarInfo(era, dados) {
 }
 
 function proximaCena() {
-  const { cena, scriptAtual } = estadoAtual;
+  const { era, cena, scriptAtual } = estadoAtual;
   if (cena < scriptAtual.length - 1) {
-    estadoAtual.cena++;
-    renderizarCena();
-    // scroll suave pro stage se tiver baixo
-    const stage = document.getElementById(`stage-${estadoAtual.era}`);
-    if (stage) {
-      const stageRect = stage.getBoundingClientRect();
-      if (stageRect.top < 0) {
-        window.scrollTo({ top: window.scrollY + stageRect.top - 80, behavior: 'smooth' });
-      }
-    }
+    const nextStep = document.querySelector(`#steps-${era} .scroll-step[data-cena="${cena + 1}"]`);
+    if (nextStep) nextStep.scrollIntoView({ behavior: 'smooth', block: 'center' });
   } else {
-    // já no fim → scroll pro bridge
-    const bridge = document.getElementById(`bridge-${estadoAtual.era}`);
+    const bridge = document.getElementById(`bridge-${era}`);
     if (bridge) bridge.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 }
 
+function cenaAnterior() {
+  const { era, cena } = estadoAtual;
+  if (cena > 0) {
+    const prevStep = document.querySelector(`#steps-${era} .scroll-step[data-cena="${cena - 1}"]`);
+    if (prevStep) prevStep.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+}
 function cenaAnterior() {
   if (estadoAtual.cena > 0) {
     estadoAtual.cena--;
