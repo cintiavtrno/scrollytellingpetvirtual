@@ -1391,38 +1391,54 @@ function mostrarBalaoFala(era, speakerEl, pessoa, texto, tail) {
   const rect = speakerEl.getBoundingClientRect();
   const stage = document.getElementById(`stage-${era}`);
   const stageRect = stage.getBoundingClientRect();
-  const px = rect.left - stageRect.left + rect.width / 2;
-  const py = rect.top - stageRect.top + rect.height / 2;
-
-  let bubbleStyle = '';
-  if (tail === 'right') bubbleStyle = `left: ${px + 56}px; top: ${py - 24}px;`;
-  else if (tail === 'left') bubbleStyle = `right: ${stageRect.width - px + 56}px; top: ${py - 24}px;`;
-  else bubbleStyle = `left: ${px + 56}px; top: ${py - 24}px;`;
+  
+  // Pega o centro horizontal e o topo do personagem
+  const px = rect.left - stageRect.left + (rect.width / 2);
+  const py = rect.top - stageRect.top;
 
   const bubble = document.createElement('div');
-  bubble.className = `speech-bubble has-tail tail-${tail}`;
-  bubble.style.cssText = bubbleStyle;
+  bubble.className = `speech-bubble has-tail`;
   bubble.innerHTML = `<div class="sb-who">${pessoa.nome} <span class="sb-age">· ${pessoa.idade}</span></div><p>${texto}</p>`;
+  
+  // Joga pro palco invisível primeiro para o navegador conseguir medir o tamanho real do texto
   layer.appendChild(bubble);
 
+  // Calcula e ajusta ANTES de mostrar na tela (evita pulos e cortes)
   requestAnimationFrame(() => {
+    const br = bubble.getBoundingClientRect();
+    
+    // 1. Lógica Horizontal: tenta pôr na direita, se vazar, joga pra esquerda
+    let finalLeft = px + 30; 
+    bubble.classList.add('tail-right');
+
+    if (finalLeft + br.width > stageRect.width - 16) {
+      finalLeft = px - br.width - 30;
+      bubble.classList.replace('tail-right', 'tail-left');
+    }
+    
+    // Se a tela for muito pequena e vazar na esquerda também, trava na borda de segurança
+    if (finalLeft < 16) {
+      finalLeft = 16;
+      bubble.classList.remove('has-tail'); // Remove biquinho pra não apontar pro vazio
+    }
+
+    // 2. Lógica Vertical: centraliza perto da cabeça, mas trava se for vazar embaixo
+    let finalTop = py - 10;
+    if (finalTop + br.height > stageRect.height - 16) {
+      finalTop = stageRect.height - br.height - 16;
+    }
+    
+    // Se vazar por cima, empurra pra baixo
+    if (finalTop < 16) {
+      finalTop = 16;
+    }
+
+    // Aplica posições finais com segurança
+    bubble.style.left = `${finalLeft}px`;
+    bubble.style.top = `${finalTop}px`;
+    bubble.style.right = 'auto'; // Remove qualquer conflito anterior
+    
     bubble.classList.add('show');
-    setTimeout(() => {
-      const br = bubble.getBoundingClientRect();
-      const sr = stage.getBoundingClientRect();
-      if (br.right > sr.right - 8) {
-        bubble.style.left = '';
-        bubble.style.right = `${sr.right - rect.left - rect.width / 2 + 56}px`;
-        bubble.classList.remove('tail-right', 'tail-left');
-        bubble.classList.add('tail-left');
-      }
-      if (br.left < sr.left + 8) {
-        bubble.style.right = '';
-        bubble.style.left = `${px + 56}px`;
-        bubble.classList.remove('tail-left', 'tail-right');
-        bubble.classList.add('tail-right');
-      }
-    }, 30);
   });
 }
 
