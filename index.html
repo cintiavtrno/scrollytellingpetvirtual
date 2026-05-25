@@ -963,7 +963,7 @@ body.era-2024 { --current-glow: var(--era24-glow); }
   <div class="ending-content">
     <span class="eyebrow" style="color: var(--era24); margin-bottom: 28px; display: inline-block;">Fim · cinco salas, uma genealogia</span>
     <h2 class="display">O mesmo truque,<br><em>refinado cinco vezes.</em></h2>
-    <<p class="lede">Em 1996, o bichinho morria se você esquecesse. Em 2012, ele ficava sujo e triste, com publicidade no canto da tela. Em 2014, ele fez o movimento inverso: pedia pra você <strong>largar o celular</strong>, e morria se você ficasse nele — mas o app ficava aberto no mesmo celular, vendendo anúncios no tempo que você devia estar longe da tela. Em 2015, ele <strong>não morava mais sozinho</strong>, dependia de outra pessoa para sobreviver, e a culpa pela morte era dividida. Em 2019, ele virou passarinho dentro de um app de idioma, cobrando aprendizado disfarçado de hábito. Em 2024, voltou a ser um pet, agora dentro do chat, com economia interna e ranking de amizades.</p>
+    <p class="lede">Em 1996, o bichinho morria se você esquecesse. Em 2012, ele ficava sujo e triste, com publicidade no canto da tela. Em 2014, ele fez o movimento inverso: pedia pra você <strong>largar o celular</strong>, e morria se você ficasse nele — mas o app ficava aberto no mesmo celular, vendendo anúncios no tempo que você devia estar longe da tela. Em 2015, ele <strong>não morava mais sozinho</strong>, dependia de outra pessoa para sobreviver, e a culpa pela morte era dividida. Em 2019, ele virou passarinho dentro de um app de idioma, cobrando aprendizado disfarçado de hábito. Em 2024, voltou a ser um pet, agora dentro do chat, com economia interna e ranking de amizades.</p>
     <p class="lede">Cada geração herdou o mesmo dispositivo emocional, <strong>uma criatura em risco que precisa de você todo dia</strong>. O que mudou foi de onde vem a obrigação. Saiu do bolso, foi pro app, virou a amizade, virou a ofensiva de aprendizado, voltou pra dentro do feed. O ciclo se fechou no Pet Streak do TikTok, que recombina todas as etapas anteriores em uma só mecânica.</p>
     <div class="closing-quote">"A obrigação de cuidar é uma âncora de engajamento muito mais forte do que a mera diversão."</div>
     <div style="display: flex; gap: 12px; margin-top: 40px; flex-wrap: wrap;">
@@ -1285,7 +1285,7 @@ function renderizarErasContainer() {
       personasHtml += `<div class="persona" id="persona-${era}-${p.id}" data-pid="${p.id}" style="left: ${p.x}%; top: ${p.y}%;">${gerarRostoSVG(p)}<div class="pn-name">${p.nome} · ${p.idade}</div></div>`;
     });
 
-    llet pontes = {
+    let pontes = {
       '1996': 'o bichinho troca de endereço.',
       '2012': 'o bichinho aprende a vender a abstenção.',
       '2014': 'o cuidado deixa de ser solitário.',
@@ -1356,7 +1356,7 @@ function inicializarScrollytellingGlobal() {
           estadoAtual.era = era;
           estadoAtual.cena = cenaIndex;
           estadoAtual.scriptAtual = SCRIPTS[era];
-          document.body.classList.remove('era-1996', 'era-2012', 'era-2015', 'era-2019', 'era-2024');
+          document.body.classList.remove('era-1996', 'era-2012', 'era-2014', 'era-2015', 'era-2019', 'era-2024');
           document.body.classList.add(`era-${era}`);
           renderizarCena();
         }
@@ -1369,15 +1369,15 @@ function inicializarScrollytellingGlobal() {
 function voltarSplash() {
   document.getElementById('splash').style.display = 'flex';
   document.getElementById('ending').classList.remove('active');
-  document.body.classList.remove('era-1996', 'era-2012', 'era-2015', 'era-2019', 'era-2024');
+  document.body.classList.remove('era-1996', 'era-2012', 'era-2014', 'era-2015', 'era-2019', 'era-2024');
   window.scrollTo({ top: 0, behavior: 'instant' });
 }
 
 function irParaEnding() {
   document.getElementById('splash').style.display = 'none';
   document.getElementById('ending').classList.add('active');
-  document.body.classList.remove('era-1996', 'era-2012', 'era-2015', 'era-2019', 'era-2024');
-  document.getElementById('ending').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.body.classList.remove('era-1996', 'era-2012', 'era-2014', 'era-2015', 'era-2019', 'era-2024');
+  document.getElementById('ending').scrollIntoView
 }
 
 function renderizarCena() {
