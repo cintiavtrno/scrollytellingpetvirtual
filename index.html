@@ -25,6 +25,10 @@
   --era12-deep: #C97D44;
   --era12-glow: rgba(240, 178, 122, 0.20);
 
+  --era14: #5E9B5C;
+  --era14-deep: #3A6B38;
+  --era14-glow: rgba(94, 155, 92, 0.18);
+
   --era15: #FFCD3C;
   --era15-deep: #D49000;
   --era15-glow: rgba(255, 205, 60, 0.22);
@@ -77,6 +81,7 @@ body::after {
 
 body.era-1996 { --current-glow: var(--era96-glow); }
 body.era-2012 { --current-glow: var(--era12-glow); }
+body.era-2014 { --current-glow: var(--era14-glow); }
 body.era-2015 { --current-glow: var(--era15-glow); }
 body.era-2019 { --current-glow: var(--era19-glow); }
 body.era-2024 { --current-glow: var(--era24-glow); }
@@ -214,6 +219,7 @@ body.era-2024 { --current-glow: var(--era24-glow); }
 .era-card:hover::before { transform: scaleX(1); }
 .era-card[data-era="1996"] { --card-color: var(--era96); }
 .era-card[data-era="2012"] { --card-color: var(--era12); }
+.era-card[data-era="2014"] { --card-color: var(--era14); }
 .era-card[data-era="2015"] { --card-color: var(--era15); }
 .era-card[data-era="2019"] { --card-color: var(--era19); }
 .era-card[data-era="2024"] { --card-color: var(--era24); }
@@ -361,6 +367,7 @@ body.era-2024 { --current-glow: var(--era24-glow); }
 
 .era-screen[data-era="1996"] { --era-color: var(--era96); --era-deep: var(--era96-deep); }
 .era-screen[data-era="2012"] { --era-color: var(--era12); --era-deep: var(--era12-deep); }
+.era-screen[data-era="2014"] { --era-color: var(--era14); --era-deep: var(--era14-deep); }
 .era-screen[data-era="2015"] { --era-color: var(--era15); --era-deep: var(--era15-deep); }
 .era-screen[data-era="2019"] { --era-color: var(--era19); --era-deep: var(--era19-deep); }
 .era-screen[data-era="2024"] { --era-color: var(--era24); --era-deep: var(--era24-deep); }
@@ -913,8 +920,16 @@ body.era-2024 { --current-glow: var(--era24-glow); }
           <p class="ec-desc">O bichinho mudou de endereço. Foi morar no celular que já tava ali. Doze pessoas que cuidaram.</p>
           <div class="ec-cta">Entrar na sala <span>→</span></div>
         </button>
-        <button class="era-card" data-era="2015" onclick="entrarEra('2015')">
+        <button class="era-card" data-era="2014" onclick="entrarEra('2014')">
           <div class="ec-num">03 · capítulo três</div>
+          <div class="ec-year">2014</div>
+          <div class="ec-name">Forest</div>
+          <div class="ec-mini"><span class="ec-mini-dot"></span><span class="ec-mini-dot"></span><span class="ec-mini-dot"></span><span class="ec-mini-dot"></span><span class="ec-mini-dot"></span></div>
+          <p class="ec-desc">O bichinho que pedia pra você largar o celular. Onze pessoas que deixaram árvores morrerem.</p>
+          <div class="ec-cta">Entrar na sala <span>→</span></div>
+        </button>
+        <button class="era-card" data-era="2015" onclick="entrarEra('2015')">
+          <div class="ec-num">04 · capítulo quatro</div>
           <div class="ec-year">2015</div>
           <div class="ec-name">Foguinho · Snapchat</div>
           <div class="ec-mini"><span class="ec-mini-dot"></span><span class="ec-mini-dot"></span><span class="ec-mini-dot"></span><span class="ec-mini-dot"></span><span class="ec-mini-dot"></span></div>
@@ -922,7 +937,7 @@ body.era-2024 { --current-glow: var(--era24-glow); }
           <div class="ec-cta">Entrar na sala <span>→</span></div>
         </button>
         <button class="era-card" data-era="2019" onclick="entrarEra('2019')">
-          <div class="ec-num">04 · capítulo quatro</div>
+          <div class="ec-num">05 · capítulo cinco</div>
           <div class="ec-year">2019</div>
           <div class="ec-name">Duolingo · ofensiva</div>
           <div class="ec-mini"><span class="ec-mini-dot"></span><span class="ec-mini-dot"></span><span class="ec-mini-dot"></span><span class="ec-mini-dot"></span><span class="ec-mini-dot"></span></div>
@@ -930,7 +945,7 @@ body.era-2024 { --current-glow: var(--era24-glow); }
           <div class="ec-cta">Entrar na sala <span>→</span></div>
         </button>
         <button class="era-card" data-era="2024" onclick="entrarEra('2024')">
-          <div class="ec-num">05 · capítulo cinco</div>
+          <div class="ec-num">06 · capítulo seis</div>
           <div class="ec-year">2024</div>
           <div class="ec-name">TikTok · Pet Streak</div>
           <div class="ec-mini"><span class="ec-mini-dot"></span><span class="ec-mini-dot"></span><span class="ec-mini-dot"></span><span class="ec-mini-dot"></span><span class="ec-mini-dot"></span></div>
@@ -948,13 +963,14 @@ body.era-2024 { --current-glow: var(--era24-glow); }
   <div class="ending-content">
     <span class="eyebrow" style="color: var(--era24); margin-bottom: 28px; display: inline-block;">Fim · cinco salas, uma genealogia</span>
     <h2 class="display">O mesmo truque,<br><em>refinado cinco vezes.</em></h2>
-    <p class="lede">Em 1996, o bichinho morria se você esquecesse. Em 2012, ele ficava sujo e triste, com publicidade no canto da tela. Em 2015, ele <strong>não morava mais sozinho</strong>, dependia de outra pessoa para sobreviver, e a culpa pela morte era dividida. Em 2019, ele virou passarinho dentro de um app de idioma, cobrando aprendizado disfarçado de hábito. Em 2024, voltou a ser um pet, agora dentro do chat, com economia interna e ranking de amizades.</p>
+    <<p class="lede">Em 1996, o bichinho morria se você esquecesse. Em 2012, ele ficava sujo e triste, com publicidade no canto da tela. Em 2014, ele fez o movimento inverso: pedia pra você <strong>largar o celular</strong>, e morria se você ficasse nele — mas o app ficava aberto no mesmo celular, vendendo anúncios no tempo que você devia estar longe da tela. Em 2015, ele <strong>não morava mais sozinho</strong>, dependia de outra pessoa para sobreviver, e a culpa pela morte era dividida. Em 2019, ele virou passarinho dentro de um app de idioma, cobrando aprendizado disfarçado de hábito. Em 2024, voltou a ser um pet, agora dentro do chat, com economia interna e ranking de amizades.</p>
     <p class="lede">Cada geração herdou o mesmo dispositivo emocional, <strong>uma criatura em risco que precisa de você todo dia</strong>. O que mudou foi de onde vem a obrigação. Saiu do bolso, foi pro app, virou a amizade, virou a ofensiva de aprendizado, voltou pra dentro do feed. O ciclo se fechou no Pet Streak do TikTok, que recombina todas as etapas anteriores em uma só mecânica.</p>
     <div class="closing-quote">"A obrigação de cuidar é uma âncora de engajamento muito mais forte do que a mera diversão."</div>
     <div style="display: flex; gap: 12px; margin-top: 40px; flex-wrap: wrap;">
       <button class="btn-nav ghost" onclick="voltarSplash()"><span class="arr">←</span> recomeçar</button>
       <button class="btn-nav" style="border-color: var(--era96); color: var(--era96);" onclick="entrarEra('1996')">1996 · Tamagotchi</button>
       <button class="btn-nav" style="border-color: var(--era12); color: var(--era12);" onclick="entrarEra('2012')">2012 · Pou</button>
+      <button class="btn-nav" style="border-color: var(--era14); color: var(--era14);" onclick="entrarEra('2014')">2014 · Forest</button>
       <button class="btn-nav" style="border-color: var(--era15); color: var(--era15);" onclick="entrarEra('2015')">2015 · Foguinho</button>
       <button class="btn-nav" style="border-color: var(--era19); color: var(--era19);" onclick="entrarEra('2019')">2019 · Duolingo</button>
       <button class="btn-nav" style="border-color: var(--era24); color: var(--era24);" onclick="entrarEra('2024')">2024 · TikTok Pet</button>
@@ -1021,6 +1037,19 @@ const PESSOAS = {
     { id: 'p10', nome: 'Murilo',  idade: '13 em 12', x: 60, y: 72, skin: '#D2A37C', cabelo: 'longoLiso',     corCabelo: '#3A1F0A', acessorio: null,        bocaMood: 'aberto' },
     { id: 'p11', nome: 'Pâmela',  idade: '11 em 12', x: 74, y: 64, skin: '#A07050', cabelo: 'cocoLateral',   corCabelo: '#2A150A', acessorio: 'brinco',    bocaMood: 'sorri' },
     { id: 'p12', nome: 'Caio',    idade: '12 em 12', x: 88, y: 70, skin: '#F2D2B6', cabelo: 'tigelinha',     corCabelo: '#C4A574', acessorio: 'oculos',    bocaMood: 'neutro' }
+  ],
+  '2014': [
+    { id: 'p1',  nome: 'Camila',  idade: '22 em 14', x: 14, y: 28, skin: '#E3BD96', cabelo: 'longoLiso',     corCabelo: '#3A1F0A', acessorio: 'oculos',  bocaMood: 'neutro' },
+    { id: 'p2',  nome: 'Felipe',  idade: '19 em 14', x: 28, y: 22, skin: '#8B5A3C', cabelo: 'undercut',      corCabelo: '#0F0904', acessorio: null,      bocaMood: 'sorri' },
+    { id: 'p3',  nome: 'Nanda',   idade: '25 em 14', x: 42, y: 32, skin: '#A47148', cabelo: 'cacheadoMedio', corCabelo: '#1A0E08', acessorio: 'brinco',  bocaMood: 'neutro' },
+    { id: 'p4',  nome: 'Edu',     idade: '21 em 14', x: 56, y: 24, skin: '#D2A37C', cabelo: 'curto',         corCabelo: '#3A1F0A', acessorio: null,      bocaMood: 'aberto' },
+    { id: 'p5',  nome: 'Priya',   idade: '24 em 14', x: 70, y: 30, skin: '#C99B7A', cabelo: 'longoLiso',     corCabelo: '#1A0E08', acessorio: 'sardas',  bocaMood: 'sorri' },
+    { id: 'p6',  nome: 'Rafa',    idade: '20 em 14', x: 86, y: 24, skin: '#6B4226', cabelo: 'raspado',       corCabelo: '#0A0604', acessorio: null,      bocaMood: 'neutro' },
+    { id: 'p7',  nome: 'Lena',    idade: '23 em 14', x: 14, y: 62, skin: '#F2D2B6', cabelo: 'franja',        corCabelo: '#C44A1F', acessorio: 'oculos',  bocaMood: 'sorri' },
+    { id: 'p8',  nome: 'Thiago',  idade: '28 em 14', x: 28, y: 70, skin: '#A07050', cabelo: 'medioOndulado', corCabelo: '#2A150A', acessorio: null,      bocaMood: 'neutro' },
+    { id: 'p9',  nome: 'Kel',     idade: '18 em 14', x: 42, y: 62, skin: '#6B4226', cabelo: 'afro',          corCabelo: '#0A0604', acessorio: 'brinco',  bocaMood: 'aberto' },
+    { id: 'p10', nome: 'Mateus',  idade: '22 em 14', x: 58, y: 72, skin: '#E8C7A0', cabelo: 'tigelinha',     corCabelo: '#C4A574', acessorio: null,      bocaMood: 'sorri' },
+    { id: 'p11', nome: 'Júlia',   idade: '20 em 14', x: 74, y: 64, skin: '#A47148', cabelo: 'cocoLateral',   corCabelo: '#6B3F1A', acessorio: 'celular', bocaMood: 'neutro' }
   ],
   '2015': [
     { id: 'p1', nome: 'Júlia',    idade: '13 em 15', x: 16, y: 28, skin: '#E3BD96', cabelo: 'longoLiso',     corCabelo: '#D4A574', acessorio: 'celular',   bocaMood: 'sorri' },
@@ -1159,8 +1188,24 @@ const SCRIPTS = {
     { tipo: 'fala', speakerId: 'p3', tail: 'right', echo: ['p1', 'p5', 'p7', 'p11'], texto: 'Olhando agora, foi onde a gente aprendeu que ter um bichinho era <em>comprar coisas pra ele</em>. Não só dar comida. Era equipar, progredir...' },
     { tipo: 'fala', speakerId: 'p8', tail: 'left', echo: ['p2', 'p6', 'p10', 'p12'], texto: 'A diferença é que o Tamagotchi morria sozinho na gaveta. O Pou ficava lá, esperando, pra sempre, com cara de coitado. Acho que era pior.' }
   ],
+  '2014': [
+    { tipo: 'titulo', texto: 'A terceira sala. Onze pessoas que tinham entre 18 e 28 anos em 2014, quando o Forest apareceu na App Store. Um app que plantava uma árvore virtual enquanto você ficava fora do celular. Se você saísse, a árvore morria.' },
+    { tipo: 'fala', speakerId: 'p2', tail: 'left', texto: 'Eu baixei porque tava na faculdade e não conseguia parar de olhar o celular enquanto estudava. Funcionou. Por umas duas semanas.' },
+    { tipo: 'fala', speakerId: 'p5', tail: 'right', echo: ['p1', 'p7'], texto: 'A árvore crescia devagar. Você via ela subindo, ganhando folhas, e <em>queria que ela chegasse lá</em>. Era bobo, mas funcionava.' },
+    { tipo: 'info', tag: 'O que era', titulo: 'Um app que pedia pra você largar o celular. Usando o celular.', body: 'Lançado em 2014 pela <strong>SeekrTech</strong>, de Taiwan. Você define um timer, uma semente começa a crescer. Se você sair do app pra usar outra coisa, a árvore morre. A versão gratuita exibe anúncios. A paga converte moedas em árvores reais plantadas via parceria com a <strong>Trees for the Future</strong>. Havia ainda plantas de edição limitada em parceria com ONGs e marcas.', stats: [{ label: 'Plataformas', value: 'iOS e Android' },{ label: 'Modelo', value: 'grátis + ads' }] },
+    { tipo: 'fala', speakerId: 'p9', tail: 'left', texto: 'Tinha plantas exclusivas de edição limitada, algumas em parceria com ONG. Comprava com moeda do app. Eu <em>comprei</em>. Por uma plantinha virtual.' },
+    { tipo: 'fala', speakerId: 'p4', tail: 'right', echo: ['p6', 'p10'], texto: 'Minha árvore morreu na primeira semana porque eu abri o Instagram sem querer. Senti culpa. Por uma árvore de pixel. Que tipo de ser humano eu sou.' },
+    { tipo: 'fala', speakerId: 'p3', tail: 'left', texto: 'O que me pegou foi a floresta acumulada. Você via todas as sessões, virava um mapa de árvores mortas e vivas. As mortas ficavam lá, secas. Tipo cemitério de produtividade fracassada.' },
+    { tipo: 'info', tag: 'O design por trás', titulo: 'A lógica inversa do Tamagotchi.', body: 'O Tamagotchi morria quando você ficava <strong>longe</strong>. O Forest morria quando você ficava <strong>perto</strong>, no celular. Mas o mecanismo emocional é o mesmo: uma criatura virtual que depende do seu comportamento para sobreviver. A diferença é que aqui a narrativa é de <strong>bem-estar e produtividade</strong>, o que torna a culpa ainda mais eficaz.', stats: [{ label: 'Quem cuida', value: 'você, sozinho' },{ label: 'O que mata', value: 'usar o celular' }] },
+    { tipo: 'fala', speakerId: 'p1', tail: 'right', echo: ['p5', 'p11'], texto: 'A versão gratuita tinha anúncio no meio. Você baixou um app pra parar de usar o celular e o app te mostra publicidade. A ironia nem é escondida.' },
+    { tipo: 'fala', speakerId: 'p8', tail: 'left', texto: 'Eu usava em pair com uma amiga. A gente entrava junto numa sessão. Se uma de nós saísse, a árvore da outra ficava comprometida. É o foguinho do Snapchat, mas disfarçado de produtividade.' },
+    { tipo: 'fala', speakerId: 'p11', tail: 'right', echo: ['p2', 'p4'], texto: 'Tem algo perturbador nisso: você usa o celular pra aprender a não usar o celular. A solução e o problema são a mesma coisa. A empresa lucra dos dois lados.' },
+    { tipo: 'info', tag: 'O legado', titulo: 'O primeiro bichinho que vendeu abstenção como produto.', body: 'O Forest provou que dá pra monetizar a <strong>ausência de tela</strong>. Anúncios na versão grátis, árvores reais vendidas como moeda emocional, parcerias com marcas em plantas exclusivas de edição limitada. A culpa de matar a árvore é o mesmo mecanismo do Tamagotchi, reembalado para adultos que se preocupam com produtividade e meio ambiente.', stats: [{ label: 'Árvores reais plantadas', value: '1 milhão+' },{ label: 'Avaliação App Store', value: '4,8 / 5' }] },
+    { tipo: 'fala', speakerId: 'p7', tail: 'left', echo: ['p3', 'p9'], texto: 'Às vezes eu deixava o app aberto e largava o celular, mas abria o computador e ficava no Twitter. A floresta crescia. Era uma mentira perfeita.' },
+    { tipo: 'fala', speakerId: 'p6', tail: 'right', echo: ['p1', 'p2', 'p4', 'p5', 'p8', 'p10', 'p11'], texto: 'A gente pagou um app pra se sentir culpada. E voltou a usar o celular de qualquer jeito. Só que agora com uma floresta morta pra provar.' }
+  ],
   '2015': [
-    { tipo: 'titulo', texto: 'A terceira sala. Onze pessoas que tinham entre 12 e 15 anos em 2015 e 2016, quando o Snapchat lançou os "Snapstreaks". O bichinho agora pertencia a duas pessoas. Se você falhasse, o outro perdia também.' },
+    { tipo: 'titulo', texto: 'A quarta sala. Onze pessoas que tinham entre 12 e 15 anos em 2015 e 2016, quando o Snapchat lançou os "Snapstreaks". O bichinho agora pertencia a duas pessoas. Se você falhasse, o outro perdia também.' },
     { tipo: 'fala', speakerId: 'p1', tail: 'left', texto: 'O foguinho aparecia do lado do nome da pessoa. Era um emoji de fogo. <em>🔥</em>. Com um número do lado contando os dias.' },
     { tipo: 'fala', speakerId: 'p4', tail: 'right', echo: ['p2', 'p6'], texto: 'Pra manter, você tinha que mandar uma foto, qualquer foto, pra pessoa, a cada 24 horas. Os dois lados. Se um esquecesse, acabou. Volta a zero.' },
     { tipo: 'info', tag: 'O que era', titulo: 'O bichinho agora pertence a duas pessoas.', body: 'Em março de 2016, o <strong>Snapchat</strong> lançou os "Snapstreaks" na atualização Chat 2.0. Um contador de dias seguidos trocando "snaps" (fotos efêmeras) com cada amigo. O brilho desse design foi transformar a cobrança do aplicativo <strong>em uma questão de amizade</strong>.', stats: [{ label: 'Lançamento', value: 'mar/2016' },{ label: 'Tempo pra perder', value: '24h' }] },
@@ -1176,7 +1221,7 @@ const SCRIPTS = {
     { tipo: 'fala', speakerId: 'p2', tail: 'right', echo: ['p1', 'p4', 'p5', 'p6', 'p7', 'p8', 'p9', 'p11'], texto: 'A gente foi a geração que aprendeu que <em>amizade tem placar</em>. E que se você não jogar o jogo todo dia, o placar volta a zero.' }
   ],
   '2019': [
-    { tipo: 'titulo', texto: 'A quarta sala. Doze pessoas, de idades muito diferentes, que mantiveram uma ofensiva no Duolingo em algum momento entre 2019 e 2024. O bichinho agora é um passarinho verde com sobrancelhas que sabem cobrar.' },
+    { tipo: 'titulo', texto: 'A quinta sala. Doze pessoas, de idades muito diferentes, que mantiveram uma ofensiva no Duolingo em algum momento entre 2019 e 2024. O bichinho agora é um passarinho verde com sobrancelhas que sabem cobrar.' },
     { tipo: 'fala', speakerId: 'p1', tail: 'right', texto: 'Eu estou com ofensiva de mil oitocentos e quarenta e sete dias. Cinco anos seguidos. Já estudei espanhol até onde dava, depois passei pro francês, agora tô no alemão. Parar é que não dá.' },
     { tipo: 'fala', speakerId: 'p4', tail: 'left', echo: ['p2', 'p9'], texto: 'O passarinho me odeia. Eu juro que me odeia. Já chegou notificação assim: <em>"esses lembretes não estão funcionando, vamos tentar outra coisa"</em>. Outra coisa, Duo? Como assim?' },
     { tipo: 'info', tag: 'O que era', titulo: 'Um app de idioma que te ensinou a ter medo de passarinho.', body: 'Lançado em junho de 2012 por <strong>Luis von Ahn</strong> e Severin Hacker. As ofensivas (streaks) entraram no app pouco depois, em 2013. Lições curtas, contador de chama na tela, leaderboards semanais. Uma das primeiras plataformas de massa a fazer do hábito diário a métrica central do produto.', stats: [{ label: 'Lançamento das streaks', value: '2013' },{ label: 'Tempo médio por lição', value: '60 a 180 seg' }] },
@@ -1192,7 +1237,7 @@ const SCRIPTS = {
     { tipo: 'fala', speakerId: 'p2', tail: 'right', echo: ['p1', 'p3', 'p5', 'p6', 'p8', 'p9', 'p11'], texto: 'A gente foi convertida em métrica. Pode chamar de aprendizado, mas no fundo a gente sabe: a única coisa que importa de verdade é o número da chama não voltar a zero.' }
   ],
   '2024': [
-    { tipo: 'titulo', texto: 'A quinta e última sala. Onze pessoas que tinham entre 12 e 18 anos quando os Pet Streaks do TikTok apareceram, no fim de 2024. O bichinho voltou. Agora com fome, com loja, com ranking, e morando dentro da conversa.' },
+    { tipo: 'titulo', texto: 'A sexta e última sala. Onze pessoas que tinham entre 12 e 18 anos quando os Pet Streaks do TikTok apareceram, no fim de 2024. O bichinho voltou. Agora com fome, com loja, com ranking, e morando dentro da conversa.' },
     { tipo: 'fala', speakerId: 'p1', tail: 'right', texto: 'Eu tenho foguinho com vinte e sete pessoas diferentes.' },
     { tipo: 'fala', speakerId: 'p4', tail: 'left', echo: ['p2', 'p9'], texto: 'O Pet Streak chegou meio escondido. Você manda mensagem todo dia, por três dias seguidos, e desbloqueia um bichinho. Ele tem nível, tem fome, tem pontinho de crescimento. Mesma coisa de sempre, em roupa nova.' },
     { tipo: 'info', tag: 'O que é', titulo: 'O bichinho voltou, agora morando dentro do chat.', body: 'O <strong>Pet Streak</strong> do TikTok começou em testes em junho de 2024 e foi liberado mais amplamente no fim daquele ano. Para desbloquear, é preciso ter uma streak ativa de pelo menos três dias com a pessoa, em chat privado ou em grupo. A partir do fim de 2025, o pet passou a ser personalizável: nome, roupinha, acessórios, comprados com pontos do próprio app.', stats: [{ label: 'Aparição da streak', value: 'jun/2024' },{ label: 'Personalização do pet', value: 'fim de 2025' }] },
@@ -1213,14 +1258,15 @@ let estadoAtual = { era: null, cena: 0, scriptAtual: null };
 
 function renderizarErasContainer() {
   const container = document.getElementById('eras-container');
-  const eras = ['1996', '2012', '2015', '2019', '2024'];
-  const nomes = { '1996': 'Tamagotchi', '2012': 'Pou', '2015': 'Foguinho do Snapchat', '2019': 'Duolingo', '2024': 'TikTok Pet Streak' };
+  const eras = ['1996', '2012', '2014', '2015', '2019', '2024'];
+  const nomes = { '1996': 'Tamagotchi', '2012': 'Pou', '2014': 'Forest', '2015': 'Foguinho do Snapchat', '2019': 'Duolingo', '2024': 'TikTok Pet Streak' };
   const titulosCap = {
     '1996': { eyebrow: 'capítulo um · 1996', h2: 'O primeiro bichinho cabia na mão. <em>E podia morrer.</em>' },
     '2012': { eyebrow: 'capítulo dois · 2012', h2: 'Agora ele morava no celular. <em>E tinha loja.</em>' },
-    '2015': { eyebrow: 'capítulo três · 2015', h2: 'Não era mais o app cobrando. <em>Era o seu amigo.</em>' },
-    '2019': { eyebrow: 'capítulo quatro · 2019', h2: 'O bichinho virou passarinho. <em>E cobrava aprendizado.</em>' },
-    '2024': { eyebrow: 'capítulo cinco · 2024', h2: 'O ciclo se fechou. <em>Tudo junto, dentro do chat.</em>' }
+    '2014': { eyebrow: 'capítulo três · 2014', h2: 'O bichinho pedia pra largar o celular. <em>Usando o celular.</em>' },
+    '2015': { eyebrow: 'capítulo quatro · 2015', h2: 'Não era mais o app cobrando. <em>Era o seu amigo.</em>' },
+    '2019': { eyebrow: 'capítulo cinco · 2019', h2: 'O bichinho virou passarinho. <em>E cobrava aprendizado.</em>' },
+    '2024': { eyebrow: 'capítulo seis · 2024', h2: 'O ciclo se fechou. <em>Tudo junto, dentro do chat.</em>' }
   };
 
   let html = '';
@@ -1239,9 +1285,10 @@ function renderizarErasContainer() {
       personasHtml += `<div class="persona" id="persona-${era}-${p.id}" data-pid="${p.id}" style="left: ${p.x}%; top: ${p.y}%;">${gerarRostoSVG(p)}<div class="pn-name">${p.nome} · ${p.idade}</div></div>`;
     });
 
-    let pontes = {
+    llet pontes = {
       '1996': 'o bichinho troca de endereço.',
-      '2012': 'o cuidado deixa de ser solitário.',
+      '2012': 'o bichinho aprende a vender a abstenção.',
+      '2014': 'o cuidado deixa de ser solitário.',
       '2015': 'a obrigação migra pro aprendizado de idioma.',
       '2019': 'o ciclo se fecha dentro do chat.'
     };
@@ -1294,7 +1341,7 @@ function entrarEra(era) {
 }
 
 function inicializarScrollytellingGlobal() {
-  const eras = ['1996', '2012', '2015', '2019', '2024'];
+  const eras = ['1996', '2012', '2014', '2015', '2019', '2024'];
   eras.forEach(era => {
     estadoAtual.era = era;
     estadoAtual.cena = 0;
@@ -1463,7 +1510,7 @@ function proximaCena() {
     const nextStep = document.querySelector(`#steps-${era} .scroll-step[data-cena="${cena + 1}"]`);
     if (nextStep) nextStep.scrollIntoView({ behavior: 'smooth', block: 'center' });
   } else {
-    const proximasEras = { '1996': '2012', '2012': '2015', '2015': '2019', '2019': '2024', '2024': 'ending' };
+    const proximasEras = { '1996': '2012', '2012': '2014', '2014': '2015', '2015': '2019', '2019': '2024', '2024': 'ending' };
     const proxima = proximasEras[era];
     if (proxima === 'ending') {
       document.getElementById('ending').classList.add('active');
