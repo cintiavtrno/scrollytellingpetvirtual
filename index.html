@@ -1377,7 +1377,7 @@ function irParaEnding() {
   document.getElementById('splash').style.display = 'none';
   document.getElementById('ending').classList.add('active');
   document.body.classList.remove('era-1996', 'era-2012', 'era-2014', 'era-2015', 'era-2019', 'era-2024');
-  document.getElementById('ending').scrollIntoView
+  document.getElementById('ending').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function renderizarCena() {
